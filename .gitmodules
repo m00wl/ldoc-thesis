@@ -1,0 +1,3 @@
+[submodule "code/l4re-spm"]
+	path = code/l4re-spm
+	url = https://github.com/m00wl/l4re-spm
