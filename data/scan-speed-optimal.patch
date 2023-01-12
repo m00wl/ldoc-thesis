@@ -19,6 +19,35 @@ index bbb29912..75d06947 100644
 +           scheduler = L4.Env.user_factory:create(L4.Proto.Scheduler, 0xa0,
 +                       0x80, 2) },
           "rom/spmm-limits");
+diff --git a/spmm/examples/limits/main.cc b/spmm/examples/limits/main.cc
+index 5f9dcd22..ab97086c 100644
+--- a/spmm/examples/limits/main.cc
++++ b/spmm/examples/limits/main.cc
+@@ -40,15 +40,15 @@ int main(void)
+   printf("fabricated optimal scenario.\n");
+ 
+   // turn optimal into suboptimal scenario.
+-  l4_addr_t it = addr + L4_PAGESIZE - 2;
+-  l4_uint16_t n = 0;
+-  while (it < addr + size)
+-  {
+-    *reinterpret_cast<l4_uint16_t *>(it) = n;
+-    n++;
+-    it += L4_PAGESIZE;
+-  }
+-  printf("fabricated suboptimal scenario.\n");
++  //l4_addr_t it = addr + L4_PAGESIZE - 2;
++  //l4_uint16_t n = 0;
++  //while (it < addr + size)
++  //{
++  //  *reinterpret_cast<l4_uint16_t *>(it) = n;
++  //  n++;
++  //  it += L4_PAGESIZE;
++  //}
++  //printf("fabricated suboptimal scenario.\n");
+ 
+   // prevent termination.
+   printf("scanning can start now...\n");
 diff --git a/spmm/server/src/simple-manager.h b/spmm/server/src/simple-manager.h
 index b7fbc6e3..c3f79313 100644
 --- a/spmm/server/src/simple-manager.h
