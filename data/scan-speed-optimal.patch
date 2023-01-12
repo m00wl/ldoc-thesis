@@ -1,0 +1,57 @@
+diff --git a/conf/theoretical-limits.cfg b/conf/theoretical-limits.cfg
+index bbb29912..75d06947 100644
+--- a/conf/theoretical-limits.cfg
++++ b/conf/theoretical-limits.cfg
+@@ -6,10 +6,14 @@ local ld = L4.default_loader;
+ local spmm_channel = ld:new_channel();
+  
+ ld:start({ caps = { spmm_allocator = spmm_channel:svr() },
+-           log = { "spmm", "yellow" } },
++           log = { "spmm", "yellow" },
++           scheduler = L4.Env.user_factory:create(L4.Proto.Scheduler, 0xa0,
++                       0x80, 1) },
+          "rom/spmm");
+ 
+ ld:start({ caps = { spm_dataspace = spmm_channel:create(L4.Proto.Dataspace,
+                                     256 * 1024 * 1024, 7, 28):m("rws"); },
+-           log = { "client", "green" } },
++           log = { "client", "green" },
++           scheduler = L4.Env.user_factory:create(L4.Proto.Scheduler, 0xa0,
++                       0x80, 2) },
+          "rom/spmm-limits");
+diff --git a/spmm/server/src/simple-manager.h b/spmm/server/src/simple-manager.h
+index b7fbc6e3..c3f79313 100644
+--- a/spmm/server/src/simple-manager.h
++++ b/spmm/server/src/simple-manager.h
+@@ -73,7 +73,7 @@ public:
+     _start_thread(_as_worker, _worker);
+ 
+     // start the statistics reporter.
+-    _start_thread(_as_statistics_reporter, _statistics);
++    //_start_thread(_as_statistics_reporter, _statistics);
+   }
+ 
+   // simple plugbox that connects every function to its respective component.
+diff --git a/spmm/server/src/simple-worker.h b/spmm/server/src/simple-worker.h
+index e8580074..744c67a3 100644
+--- a/spmm/server/src/simple-worker.h
++++ b/spmm/server/src/simple-worker.h
+@@ -140,7 +140,7 @@ public:
+   void run(void) override
+   {
+     printf("worker spawn @%lu\n", _get_current_time_in_ms());
+-    l4_sleep(60000);
++    l4_sleep(30000);
+     _immutable_pages.clear();
+     _volatile_pages.clear();
+ 
+@@ -200,7 +200,8 @@ public:
+ 
+       //sleep.
+       printf("worker sleep @%lu\n", _get_current_time_in_ms());
+-      l4_sleep(_sleep_duration);
++      //l4_sleep(_sleep_duration);
++      l4_sleep_forever();
+       _volatile_pages.clear();
+     }
+   }
