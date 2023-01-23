@@ -1,0 +1,62 @@
+diff --git a/l4re/src/l4/pkg/uvmm/server/src/main.cc b/l4re/src/l4/pkg/uvmm/server/src/main.cc
+index ea83cc00..240cf3c3 100644
+--- a/l4re/src/l4/pkg/uvmm/server/src/main.cc
++++ b/l4re/src/l4/pkg/uvmm/server/src/main.cc
+@@ -295,6 +295,8 @@ int main(int argc, char *argv[])
+   info.printf("Populating RAM of virtual machine\n");
+   vmm->map_eager();
+ 
++  printf("uvmm sleep\n");
++  l4_sleep(1500000);
+   vmm->run(vm_instance.cpus());
+ 
+   Err().printf("ERROR: we must never reach this....\n");
+diff --git a/spmm/server/src/main.cc b/spmm/server/src/main.cc
+index 34953273..2cf6e12f 100644
+--- a/spmm/server/src/main.cc
++++ b/spmm/server/src/main.cc
+@@ -24,7 +24,7 @@ int main(void)
+   Spmm::SimpleMemory        *memory     = new Spmm::SimpleMemory();
+   Spmm::SimpleQueue         *queue      = new Spmm::SimpleQueue();
+   Spmm::SimpleStatistics    *statistics = new Spmm::SimpleStatistics();
+-  Spmm::SimpleWorker        *worker     = new Spmm::SimpleWorker(65536, 10000);
++  Spmm::SimpleWorker        *worker     = new Spmm::SimpleWorker(262144, 10000);
+ 
+   Spmm::SimpleManager *manager;
+   manager = new Spmm::SimpleManager(allocator, lock, memory, queue, statistics,
+diff --git a/spmm/server/src/simple-manager.h b/spmm/server/src/simple-manager.h
+index b7fbc6e3..c3f79313 100644
+--- a/spmm/server/src/simple-manager.h
++++ b/spmm/server/src/simple-manager.h
+@@ -73,7 +73,7 @@ public:
+     _start_thread(_as_worker, _worker);
+ 
+     // start the statistics reporter.
+-    _start_thread(_as_statistics_reporter, _statistics);
++    //_start_thread(_as_statistics_reporter, _statistics);
+   }
+ 
+   // simple plugbox that connects every function to its respective component.
+diff --git a/spmm/server/src/simple-worker.h b/spmm/server/src/simple-worker.h
+index e8580074..fb5122fc 100644
+--- a/spmm/server/src/simple-worker.h
++++ b/spmm/server/src/simple-worker.h
+@@ -140,7 +140,7 @@ public:
+   void run(void) override
+   {
+     printf("worker spawn @%lu\n", _get_current_time_in_ms());
+-    l4_sleep(60000);
++    l4_sleep(90000);
+     _immutable_pages.clear();
+     _volatile_pages.clear();
+ 
+@@ -200,7 +200,8 @@ public:
+ 
+       //sleep.
+       printf("worker sleep @%lu\n", _get_current_time_in_ms());
+-      l4_sleep(_sleep_duration);
++      //l4_sleep(_sleep_duration);
++      l4_sleep_forever();
+       _volatile_pages.clear();
+     }
+   }
