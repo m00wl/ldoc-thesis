@@ -1,6 +1,6 @@
 file,time_mean,time_max,time_min,time_spm_mean,time_spm_max,time_spm_min,overhead
 dickens,179,180,179,305,306,304,0.7039
-mozilla,370,371,370,556,554,558,0.5027
+mozilla,370,371,370,556,558,554,0.5027
 mr,182,182,182,285,285,284,0.5659
 nci,196,197,195,260,260,259,0.3265
 ooffice,127,128,127,207,207,206,0.6299
