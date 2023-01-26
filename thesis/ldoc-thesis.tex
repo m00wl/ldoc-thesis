@@ -1,12 +1,45 @@
-\documentclass[ngerman,english]{tudscrreprt}
+\documentclass[ngerman,english,paper=a4]{tudscrreprt}
 
 \usepackage{fontspec}
 \usepackage{babel}
 \usepackage{scrhack}
+\usepackage[colorlinks,linkcolor=blue]{hyperref}
+\usepackage{acro}
+\input{include/acronyms}
 
 \begin{document}
 
-\input{include/coverpage.tex}
+\input{include/coverpage}
+
+\TUDoption{abstract}{multiple,section}
+\begin{abstract}
+  \input{include/abstract-en}
+\nextabstract[ngerman]
+  \input{include/abstract-de}
+\end{abstract}
+
+\confirmation
+
+\tableofcontents
+\listoffigures
+\listoftables
+\printacronyms[name=List of Acronyms]
+
+\input{include/introduction}
+
+\input{include/background}
+
+\input{include/related-work}
+
+\input{include/design}
+
+\input{include/implementation}
+
+\input{include/performance-evaluation}
+
+\input{include/conclusion}
+
+\input{include/summary}
 
 \end{document}
 

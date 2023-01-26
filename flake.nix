@@ -1,5 +1,5 @@
 {
-  description = "m00wl large document thesis";
+  description = "m00wl's large document thesis";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -21,15 +21,14 @@
         ...
       }: let
         tex = pkgs.texlive.combine {
-          inherit (pkgs.texlive) scheme-small latexmk tudscr
-            newunicodechar;
+          inherit (pkgs.texlive) scheme-small latexmk tudscr newunicodechar acro translations;
         };
       in {
         devShells.default = pkgs.mkShell {
-          packages = [ tex ];
+          packages = [tex];
           shellHook = ''
             export LDOC_THESIS_ROOT=$(git rev-parse --show-toplevel)
-            alias mt="env SOURCE_DATE_EPOCH=$(date +%s) latexmk -pdf -lualatex -auxdir=$LDOC_THESIS_ROOT/thesis/build $LDOC_THESIS_ROOT/thesis/ldoc-thesis.tex"
+            alias mt="env SOURCE_DATE_EPOCH=$(date +%s) latexmk -pdf -lualatex -auxdir=$LDOC_THESIS_ROOT/thesis/build -cd $LDOC_THESIS_ROOT/thesis/ldoc-thesis.tex"
           '';
         };
       };
