@@ -2,10 +2,14 @@
 
 \usepackage{fontspec}
 \usepackage{babel}
+\usepackage[babel]{microtype}
 \usepackage{scrhack}
 \usepackage[colorlinks,linkcolor=blue]{hyperref}
 \usepackage{acro}
 \input{include/acronyms}
+\usepackage{csquotes}
+\usepackage[backend=biber,style=alphabetic]{biblatex}
+\addbibresource{lit.bib}
 
 \begin{document}
 
@@ -19,27 +23,20 @@
 \end{abstract}
 
 \confirmation
-
 \tableofcontents
 \listoffigures
 \listoftables
 \printacronyms[name=List of Acronyms]
 
 \input{include/introduction}
-
 \input{include/background}
-
 \input{include/related-work}
-
 \input{include/design}
-
 \input{include/implementation}
-
 \input{include/performance-evaluation}
-
 \input{include/conclusion}
-
 \input{include/summary}
 
-\end{document}
+\printbibliography[heading=bibintoc]
 
+\end{document}
