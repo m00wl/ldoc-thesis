@@ -21,7 +21,11 @@
         ...
       }: let
         tex = pkgs.texlive.combine {
-          inherit (pkgs.texlive) scheme-small latexmk tudscr newunicodechar acro translations csquotes biblatex biber;
+          inherit (pkgs.texlive) scheme-small latexmk tudscr
+          newunicodechar
+          acro translations
+          csquotes biblatex biber
+          standalone svn-prov pgfplots;
         };
       in {
         devShells.default = pkgs.mkShell {
