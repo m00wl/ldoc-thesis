@@ -32,7 +32,8 @@
           packages = [tex];
           shellHook = ''
             export LDOC_THESIS_ROOT=$(git rev-parse --show-toplevel)
-            alias mt="env SOURCE_DATE_EPOCH=$(date +%s) latexmk -pdf -lualatex -auxdir=$LDOC_THESIS_ROOT/thesis/build -cd $LDOC_THESIS_ROOT/thesis/ldoc-thesis.tex"
+            alias mt="cd $LDOC_THESIS_ROOT/thesis && latexmk ldoc-thesis.tex && cd -"
+            alias mtc="cd $LDOC_THESIS_ROOT/thesis && latexmk -C && cd -"
           '';
         };
       };

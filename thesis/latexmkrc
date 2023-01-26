@@ -1,0 +1,5 @@
+$pdflatex = "lualatex %O %S";
+$pdf_mode = 1;
+$postscript_mode = $dvi_mode = 0;
+$aux_dir = "./build";
+$clean_ext = "out %R.acn %R.bbl %R.glo %R.ist %R.run.xml %R.slo %R.sta %R.xdy";
