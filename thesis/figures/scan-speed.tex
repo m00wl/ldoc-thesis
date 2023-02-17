@@ -1,0 +1,45 @@
+\documentclass[class=minimal,border=0pt]{standalone}
+
+\usepackage{tudscrcolor}
+\usepackage{amsmath}
+\usepackage{pgfplots}
+
+\begin{document}
+
+\begin{tikzpicture}
+  \begin{axis}[
+      title={Scan Speed},
+      xlabel={Memory Size [\emph{MiB}]},
+      ylabel={Scan Speed [\emph{$\frac{MiB}{s}$}]},
+      xmode=log,
+      xtick={1,2,4,8,16,32,64,128,256},
+      grid=major,
+      log basis x={2},
+    ]
+    \addplot[
+      only marks,
+      mark=*,
+      color=cdblue,
+    ]
+    table[
+      col sep=comma,
+      x=size,
+      y expr=(\thisrow{size} / \thisrow{time}) * 1000,
+    ]
+    {../../data/scan-speed-optimal.csv};
+    \addplot[
+      only marks,
+      mark=square*,
+      color=cdorange,
+    ]
+    table[
+      col sep=comma,
+      x=size,
+      y expr=(\thisrow{size} / \thisrow{time}) * 1000,
+    ]
+    {../../data/scan-speed-suboptimal.csv};
+    \legend{optimal, suboptimal}
+  \end{axis}
+\end{tikzpicture}
+
+\end{document}

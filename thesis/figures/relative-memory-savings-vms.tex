@@ -1,0 +1,31 @@
+\documentclass[class=minimal,border=0pt]{standalone}
+
+\usepackage{tudscrcolor}
+\usepackage{pgfplots}
+
+\begin{document}
+
+\begin{tikzpicture}
+  \begin{axis}[
+      title={Relative Memory Savings (VMs)},
+      xlabel={VM count [\emph{n}]},
+      ylabel={Memory Savings [\emph{\%}]},
+      xtick={1,2,3,4},
+      ymin=70,
+      ymax=100,
+      grid=both
+    ]
+    \addplot[
+      color=cdblue,
+      loosely dashed
+    ]
+    table[
+      col sep=comma,
+      x=vms,
+      y expr=\thisrow{relative_saving}*100,
+    ]
+    {../../data/relative-memory-savings-vms.csv};
+  \end{axis}
+\end{tikzpicture}
+
+\end{document}

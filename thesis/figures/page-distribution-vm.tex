@@ -1,0 +1,55 @@
+\documentclass[class=minimal,border=0pt]{standalone}
+
+\usepackage{tudscrcolor}
+\usepackage{pgfplots}
+
+\begin{document}
+
+\begin{tikzpicture}
+  \begin{axis}[
+      title={Page Distribution (VM Image)},
+      xlabel={Time [\emph{ms}]},
+      ylabel={Pages [\emph{n}]},
+      width=\textwidth,
+      height=6cm,
+      smooth,
+      stack plots=y,
+      enlargelimits=false,
+      area legend,
+      legend columns=-1
+    ]
+    \addplot[
+      pattern=north west lines,
+      pattern color=cdorange
+    ]
+    table[
+      col sep=comma,
+      x=time,
+      y=pages_unshared,
+    ]
+    {../../data/page-distribution-vm.csv} \closedcycle;
+    \addplot[
+      pattern=crosshatch,
+      pattern color=cdgreen
+    ]
+    table[
+      col sep=comma,
+      x=time,
+      y=pages_shared,
+    ]
+    {../../data/page-distribution-vm.csv} \closedcycle;
+    \addplot[
+      pattern=north east lines,
+      pattern color=cdblue
+    ]
+    table[
+      col sep=comma,
+      x=time,
+      y=pages_saved,
+    ]
+    {../../data/page-distribution-vm.csv} \closedcycle;
+    \legend{unshared, shared, saved}
+  \end{axis}
+\end{tikzpicture}
+
+\end{document}

@@ -1,0 +1,63 @@
+\documentclass[class=minimal,border=0pt]{standalone}
+
+\usepackage{tudscrcolor}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usetikzlibrary{patterns}
+
+\begin{document}
+
+\pgfplotstableread[col sep=comma]{../../data/runtime-turbobench-silesia.csv}\datatable
+
+\begin{tikzpicture}
+  \begin{axis}[
+      title={Overhead (Turbobench Runtime on Silesia Corpus)},
+      xlabel={Silesia Corpus [\emph{file}]},
+      ylabel={Turbobench Runtime [\emph{s}]},
+      xtick=data,
+      xticklabels from table={\datatable}{file},
+      x tick label style={rotate=45,anchor=east},
+      x label style={at={(axis description cs:0.5,-0.3)},anchor=north},
+      ymax=800,
+      ybar=0pt,
+      nodes near coords,
+      nodes near coords style={rotate=90,anchor=west},
+      width=\textwidth,
+      height=6cm,
+      legend columns=-1
+    ]
+    \addplot[
+      pattern color=cdblue,
+      pattern=north east lines,
+      error bars/.cd,
+      y dir=both,
+      y explicit,
+    ]
+    table[
+      col sep=comma,
+      x expr=\coordindex,
+      y=time,
+      y error plus=etime+,
+      y error minus=etime-
+    ]
+    {\datatable};
+    \addplot[
+      pattern=north west lines,
+      pattern color=cdorange,
+      error bars/.cd,
+      y dir=both,
+      y explicit,
+    ]
+    table[
+      col sep=comma,
+      x expr=\coordindex,
+      y=time_spm,
+      y error plus=etime_spm+,
+      y error minus=etime_spm-
+    ]
+    {\datatable};
+    \legend{no SPMM, SPMM}
+  \end{axis}
+\end{tikzpicture}
+
+\end{document}

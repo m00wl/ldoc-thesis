@@ -1,0 +1,105 @@
+\documentclass[class=minimal,border=0pt]{standalone}
+
+\usepackage{tudscrcolor}
+\usepackage[simplified]{pgf-umlcd}
+
+%\renewcommand{\umltextcolor}{black}
+%\renewcommand{\umlfillcolor}{lightgray}
+\renewcommand{\umldrawcolor}{cdblue}
+
+\begin{document}
+
+\begin{tikzpicture}
+  \begin{package}{SPMM}
+
+    \begin{interface}[text width=8cm]{Manager}{15,0}
+      \operation[0]{+ <component interaction functions>}
+    \end{interface}
+
+    \begin{class}[text width=8cm]{ConcreteManager}{10,-4}
+      \implement{Manager}
+    \end{class}
+
+    \begin{interface}[text width=8cm]{Component}{20,-4}
+      \operation{+ set\_manager(manager : Manager *) : void}
+    \end{interface}
+
+    \begin{interface}[]{Allocator}{0,-12}
+      \implement{Component}
+      \operation[0]{+ allocate\_page(...) : page\_t}
+      \operation[0]{+ free\_page(...)}
+      \operation[0]{+ handle\_page\_fault(...)}
+    \end{interface}
+
+    \begin{interface}[]{Lock}{6,-12}
+      \implement{Component}
+      \operation[0]{+ lock\_page(...)}
+      \operation[0]{+ unlock\_page(...)}
+    \end{interface}
+
+    \begin{interface}[]{Memory}{12,-12}
+      \implement{Component}
+      \operation[0]{+ merge\_pages(...) : error\_t}
+      \operation[0]{+ unmerge\_page(...) : error\_t}
+      \operation[0]{+ is\_merged\_page(...) : bool}
+    \end{interface}
+
+    \begin{interface}[]{Queue}{18,-12}
+      \implement{Component}
+      \operation[0]{+ register\_page(...)}
+      \operation[0]{+ unregister\_page(...)}
+      \operation[0]{+ get\_next\_page(...) : page\_t}
+    \end{interface}
+
+    \begin{interface}[]{Statistics}{24,-12}
+      \implement{Component}
+      \operation[0]{+ increment\_counter(...)}
+      \operation[0]{+ decrement\_counter(...)}
+      \operation[0]{+ read\_counter(...) : counter\_t}
+    \end{interface}
+
+    \begin{interface}[]{Worker}{30,-12}
+      \implement{Component}
+      \operation[0]{+ run()}
+      \operation[0]{+ notify(...) : bool}
+    \end{interface}
+
+    \unidirectionalAssociation{Component}{manager}{1}{Manager}
+    \unidirectionalAssociation{ConcreteManager}{allocator}{1..n}{Allocator}
+    \unidirectionalAssociation{ConcreteManager}{lock}{1..n}{Lock}
+    \unidirectionalAssociation{ConcreteManager}{memory}{1..n}{Memory}
+    \unidirectionalAssociation{ConcreteManager}{queue}{1..n}{Queue}
+    \unidirectionalAssociation{ConcreteManager}{statistics}{1..n}{Statistics}
+    \unidirectionalAssociation{ConcreteManager}{worker}{1..n}{Worker}
+
+    %\draw[umlcd style dashed line,->](Allocator) ++(0,1) -- ++(0,8) -| (Component);
+    %\draw[umlcd style dashed line](Allocator) ++(0,1) -- ++(0,8);
+
+    \begin{class}[]{ConcreteAllocator}{0,-16}
+      \implement{Allocator}
+    \end{class}
+
+    \begin{class}[]{ConcreteLock}{6,-16}
+      \implement{Lock}
+    \end{class}
+
+    \begin{class}[]{ConcreteMemory}{12,-16}
+      \implement{Memory}
+    \end{class}
+
+    \begin{class}[]{ConcreteQueue}{18,-16}
+      \implement{Queue}
+    \end{class}
+
+    \begin{class}[]{ConcreteStatistics}{24,-16}
+      \implement{Statistics}
+    \end{class}
+
+    \begin{class}[]{ConcreteWorker}{30,-16}
+      \implement{Worker}
+    \end{class}
+
+  \end{package}
+\end{tikzpicture}
+
+\end{document}
