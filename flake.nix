@@ -25,7 +25,7 @@
           newunicodechar
           acro translations
           csquotes biblatex biber
-          standalone svn-prov pgfplots;
+          standalone svn-prov pgfplots pgf-umlcd;
         };
       in {
         devShells.default = pkgs.mkShell {
