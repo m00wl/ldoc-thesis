@@ -4,7 +4,7 @@
 \usepackage{babel}
 \usepackage[babel]{microtype}
 \usepackage{scrhack}
-\usepackage[colorlinks,linkcolor=blue]{hyperref}
+\usepackage[colorlinks,linkcolor=cdblue]{hyperref}
 \usepackage{acro}
 \input{include/acronyms}
 \usepackage{csquotes}
@@ -16,13 +16,14 @@
 
 \input{include/coverpage}
 
-\TUDoption{abstract}{multiple,section}
+\TUDoption{abstract}{single,chapter}
 \begin{abstract}
   \input{include/abstract-en}
 \nextabstract[ngerman]
   \input{include/abstract-de}
 \end{abstract}
 
+\TUDoption{declaration}{chapter}
 \confirmation
 \tableofcontents
 \listoffigures
@@ -34,7 +35,7 @@
 \input{include/related-work}
 \input{include/design}
 \input{include/implementation}
-\input{include/performance-evaluation}
+\input{include/evaluation}
 \input{include/conclusion}
 \input{include/summary}
 

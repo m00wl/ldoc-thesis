@@ -1,3 +1,111 @@
 \chapter{Background}
+\label{chap:background}
 
-Lorem Ipsum Dolor Si Amet.
+The ability to remember information, i.e. to load and store data of some kind, is an essential requirement for the operation of computer systems, dating back to their invention in the early 20\textsuperscript{th} century.
+This prerequisite coined the term \emph{memory} for a component that has been an indispensable part of such systems ever since.
+Over the years, computer memory underwent a wide range of evolutions, absorbing nearly 80 years of technological influences from magnetic tape to modern transistor-based memory cells.
+The general trend of ever-increasing capacity, shrinking size, accelerating access times and thus decreasing cost [\emph{$\frac{\$}{MiB}$}] persists to this day \cite{memory-price}.
+Due to the fact that memory characteristics differ substantially, a multitude of memory management techniques have evolved and perished over the years.
+This chapter provides an overview of the most common memory architecture found in computer systems today, and it illustrates contemporary memory management techniques for administering these resources.
+In addition to that, it explains how \ac{spm} works in principle and how it builds on the memory management subsystem in modern \acp{os}.
+
+\section{Memory Hierarchy}
+\label{sec:memory-hierarchy}
+
+The predominant memory architecture found in many computer systems today is a hierarchy of different memory types with varying access time, storage capacites and costs.
+This collection of diverse memory classes is required in order to meet the storage needs and performance demands of modern applications and usage scenarios.
+Table \ref{tab:memory-hierarchy} gives an overview over components that make up this hierarchy, as well as their capacity and the time it takes the \ac{cpu} to access them.
+It can be seen that access time and capacity are increasing further down the hierarchy.
+This is due to the increasing distance to the \ac{cpu} and non-negligible overheads for address lookup and data transport that come with bigger memory sizes.
+
+Registers are the fastest and smallest memory components within the \ac{cpu}.
+They are used for temporarily storing data that is being processed.
+A cache is a high-speed memory that is located close to the \ac{cpu}.
+It stores frequently used data and instructions to reduce the number of memory accesses to main memory.
+To further hide differences in access times, most caches implement similar sub-hierarchies in the form of cache levels.
+Main memory or \acf{ram} is the primary memory storage in a computer.
+It is larger and slower than cache, but faster than disk-based storage.
+\Ac{ram} is characterized by its speed and the fact that it is directly accessible by the processor.
+This is in contrast to other forms of storage that appear later in the hierarchy, such as hard drives or SSDs, which must be accessed through the input/output system of the computer.
+In this sense, it acts as a bridge between the processor and other forms of storage, allowing for quick access to data without needing to wait for slower components to respond.
+Secondary storage and archive storage, being the first non-volatile and most voluminous components, are used to store data that is currently not used.
+Their classification in online and offline storage simply states whether human intervention is needed in order for computer systems to access these memory components or not.
+
+\begin{table}
+  \centering
+  \begin{tabular}{|c|l|r|r|}
+    \hline
+    \textbf{Classification} & \textbf{Component} & \textbf{Access Time} & \textbf{Capacity Range} \\
+    \hline
+    Internal & \acs{cpu} register                    & \texttt{<1 ns}    & \texttt{B-KiB}\\
+             & \acs{cpu} cache                       & \texttt{1-5 ns}   & \texttt{KiB-MiB}\\
+    Main     & primary storage (\acs{ram}, etc.)     & \texttt{50-70 ns} & \texttt{GiB-TiB}\\
+    Online   & secondary storage (HDD, SSD, etc.)    & \texttt{5-12 ms}  & \texttt{TiB-PiB}\\
+    Offline  & archive storage (CD, DVD, tape, etc.) & \texttt{>50 s}    & \texttt{PiB-EiB}\\
+    \hline
+  \end{tabular}
+  \caption{Components in the Hierarchical Memory Architecture (according to \cite{memory-hierarchy1994, kumar-memory-hierarchy2018})}
+  \label{tab:memory-hierarchy}
+\end{table}
+
+The memory hierarchy, as a multi-level structure, is designed to provide fast access to frequently used data, while also providing a large, less expensive storage area for infrequently used information that can persist across system downtimes.
+In order to achieve this, data is moved between components of the different levels in the hierarchy.
+By exploiting spatial and temporal locality of program execution, high-demand data and instructions can be kept in fast, low-capacity memory near or even inside the \ac{cpu}.
+On the other hand, data that is only sporadically needed can be moved further away into slower but high-volume and low-cost storage.
+Optimising these data movement operations is partly done by hardware, but also one of the responsibilities of the memory management subsystem in modern \acp{os}.
+
+The memory hierarchy in modern computers is constantly evolving to keep up with the ever-increasing need for fast and efficient memory access.
+One of the primary influences on the memory hierarchy is the memory wall, which refers to the growing disparity between \ac{cpu} speeds and memory access times.
+As \acp{cpu} continue to get faster, they spend more time waiting for data to be fetched from memory, which leads to a bottleneck in performance \cite{memory-wall1995}.
+To address the memory wall, the memory hierarchy has traditionally relied on the use of multiple levels of intermediate components such as caches.
+However, the effectiveness of this approach is limited by the capacity of the caches and the overhead associated with managing them.
+To overcome these limitations, non-volatile memory technologies are being developed \cite{nvm2021}.
+These technologies promise to bridge the gap between main memory and storage by providing fast and persistent storage that can be accessed directly by the \ac{cpu}.
+As a result, the memory hierarchy in modern computers is expected to undergo significant changes in the coming years, with non-volatile memory technologies becoming an increasingly important component of the hierarchy.
+This will revolutionise the way in which memory is managed by the \ac{os} as well.
+
+\section{Virtual Memory and Memory Paging}
+\label{sec:virtual-memory-memory-paging}
+
+At the moment, the most popular way to manage memory resources is to use the mechanism of virtual memory in conjunction with a technique called memory paging.
+Virtual memory is used by \acp{os} to provide programs running on the computer with the illusion of a larger memory space than the physical memory available.
+According to technical literature \cite{mos2009}, the concept behind virtual memory is to create an abstraction of the computer's physical memory, which is divided into fixed-size chunks called pages.
+Each process is given a virtual address space, which it can use to access its own dedicated memory.
+This works by maintaining a mapping from per-process virtual memory pages to the physical memory pages that actually exist.
+In this sense, the physical memory pages are used to back parts of the processes virtual address space, but only those that are used.
+Since processes rarely exhaust all of their virtual address space capacity, this sparse mapping technique provides a convenient solution that additionally enables isolation between processes.
+However, due to limited main memory capacity as well as parallel and concurrent workloads, not all of the data belonging to a specific virtual address space can be stored in physical memory at all times.
+Memory paging is a technique that solves this problem.
+As described in technical literature \cite{mos2009}, the process of memory paging involves the movement of memory pages between main memory of a computer and online secondary storage.
+This relocation of memory pages, also called swapping, ensures that the most frequently used pages are kept in main memory for improved performance, while less frequently used pages are evacuated in order to free up physical memory.
+Using both techniques in conjunction allows applications and services to have a large nearly infinite virtual memory space, while the physical memory is used to cache the most frequently used parts of their address spaces.
+The common practice of allocating more memory to processes than is physically available in the system, therefore relying on memory paging for the system to serve the memory allocations of every process, is called overcommitment.
+%This shows, that the memory hierarchy, virtual memory and memory paging are closely related concepts in modern computers that work hand in hand.
+
+In modern \acp{os}, the virtual memory subsystem is implemented using a combination of hardware and software \cite{mos2009}.
+The \ac{mmu}, serving as the main hardware component, is responsible for managing the mapping between virtual addresses and physical addresses in a computer's memory.
+This is done for performance reasons.
+Resource-restrained devices may also implement \ac{mmu} behaviour in software \cite{sw-mmu2005}.
+The task of the \ac{mmu} is to convert virtual memory addresses used by applications and the \ac{os} into physical memory addresses that the hardware can understand.
+It is achieved by maintaining a page table, which is a data structure that describes this mapping.
+When a memory access request is generated, the \ac{mmu} uses the page table to translate the virtual address into a physical address and checks possible memory access restrictions.
+For this, the \ac{mmu} uses a small, fast memory component called the \ac{tlb}.
+The \ac{tlb}, a cache close to the \ac{mmu}, stores recently used virtual-to-physical memory mappings, enabling the \ac{mmu} to perform address translations more efficiently.
+If the mapping is found in the \ac{tlb}, the \ac{mmu} can use the physical address without having to perform a full translation, walking through the entire page table which induces significant overhead.
+If a page is not in memory or has no mapping, the \ac{mmu} triggers a page fault, which is handled by the \ac{os}'s page fault handler.
+It may swap in exisiting memory, allocate new one or raise an exception, depending on the address that is being accessed.
+The software part of the memory management subsystem is responsible for operating this hardware infrastructure.
+It keeps a page table per process and updates it accordingly for every memory allocation and deallocation.
+For every process switch, the page table needs to be switched as well.
+Next to the allocation and deallocation of memory as well as the handling of page faults, it also employs page displacement alogrithms in order to decide which pages to swap out in the case of memory contention.
+
+\section{How \acs{spm} works}
+\label{sec:how-spm-works}
+
+Page deduplication, and \ac{spm} in particular, build upon this exisiting memory page model.
+The idea is to reduce the main memory footprint of applications in a way that frees up physical memory pages which the \ac{os} can reuse for other purposes such as holding more heterogeneous virtual pages in main memory.
+During \ac{spm} operation, the main memory is continuously scanned for pages that feature the same memory content.
+When two matching pages are identified, their mappings in the virtual-to-physical page tables are altered in a way such that both entries point to the same physical page.
+This effectively frees up one page that can be deallocated and returned to the system.
+By sharing the same physical page between two or more mappings, memory density is increased and memory pressure relieved.
+Since this pierces process isolation, where every process is assigned its own private part of memory, special attention needs to be paid to not leak sensitive data or enable unsolicitated side-channels.
