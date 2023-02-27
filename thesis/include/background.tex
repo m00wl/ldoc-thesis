@@ -1,6 +1,8 @@
 \chapter{Background}
 \label{chap:background}
 
+%TODO: explain memory pressure
+
 The ability to remember information, i.e. to load and store data of some kind, is an essential requirement for the operation of computer systems, dating back to their invention in the early 20\textsuperscript{th} century.
 This prerequisite coined the term \emph{memory} for a component that has been an indispensable part of such systems ever since.
 Over the years, computer memory underwent a wide range of evolutions, absorbing nearly 80 years of technological influences from magnetic tape to modern transistor-based memory cells.
@@ -103,9 +105,9 @@ Next to the allocation and deallocation of memory as well as the handling of pag
 \label{sec:how-spm-works}
 
 Page deduplication, and \ac{spm} in particular, build upon this exisiting memory page model.
-The idea is to reduce the main memory footprint of applications in a way that frees up physical memory pages which the \ac{os} can reuse for other purposes such as holding more heterogeneous virtual pages in main memory.
+The idea is to reduce the main memory footprint of applications in a way that frees up physical memory pages which the \ac{os} can reuse for other purposes such as for holding more heterogeneous virtual pages in main memory.
 During \ac{spm} operation, the main memory is continuously scanned for pages that feature the same memory content.
 When two matching pages are identified, their mappings in the virtual-to-physical page tables are altered in a way such that both entries point to the same physical page.
 This effectively frees up one page that can be deallocated and returned to the system.
-By sharing the same physical page between two or more mappings, memory density is increased and memory pressure relieved.
+By sharing the same physical page between two or more mappings, a technique called \ac{cbps}, memory density is increased and memory pressure relieved.
 Since this pierces process isolation, where every process is assigned its own private part of memory, special attention needs to be paid to not leak sensitive data or enable unsolicitated side-channels.
