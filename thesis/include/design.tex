@@ -94,7 +94,7 @@ In other words, memory components are responsible for applying the $\sigma_P$ ma
 
 The Lock component provides an interface for memory access synchronisation functionality.
 Components of this class help to ensure deadlock- and race-free access to the regions of client memory on which the \ac{spmm} operates.
-Other components can request page-granular exclusive memory access from a Lock in order to protect critical sections of their execution.
+Other components can use the functions \texttt{lock\_page(...)} and \texttt{unlock\_page(...)} to request or release page-granular exclusive memory access from a Lock in order to protect critical sections of their execution.
 Each page can be locked by only one thread at a time.
 Furthermore, a single thread can acquire and hold locks to multiple pages simultaneously.
 These components help to enforce the required security properties of $\sigma_P$ mentioned in section \ref{sec:objective}.
