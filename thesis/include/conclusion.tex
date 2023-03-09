@@ -1,3 +1,35 @@
 \chapter{Conclusion}
+\label{chap:conclusion}
 
-Lorem Ipsum Dolor Si Amet.
+This large document thesis explored the concept of page deduplication and its potential to reduce the overall memory pressure in a system.
+The new \ac{spmm} design presented a flexible and \ac{os}-agnostic approach to \acl{cbps}.
+By encapsulating functionality into distinct components, \ac{spmm} encouraged conscious software design.
+In addition to that, this encapsulation technique allowed a clear and easy-to-use framework to be developed.
+It features pluggable components that can be freely combined to specify arbitrary \ac{spm} implementations while relying solely on common virtual memory abstractions.
+
+The reference implementation in the \ac{l4re} real-time \ac{os} is another major contribution of this thesis.
+As the first implementation in a microkernel-based system, it underlined the validity and general applicability of the framework design.
+It also enriched the \ac{l4re} ecosystem of service software with \ac{cbps} functionality.
+
+The author provided a comprehensive evaluation of the framework implementation.
+The findings of the performance evaluation painted a hopeful picture.
+Even with non-optimised components, the \ac{spmm} scan speed reached up to 50$\frac{MiB}{s}$.
+In addition, for a realistic compression workload in a virtualised environment, \ac{spmm} was able to maintain a permanent memory saving of at least 37\%, while incurring an average overhead of only 57.38\%.
+In terms of security, the evaluation picture was rather bleak.
+The \ac{spmm} inherits the non-negligible management overhead and vulnerability to timing attacks of most \ac{cbps} implementations.
+However, the \ac{spmm} design explicitly allows for the addition of protective measures in future work.
+
+Given these results, the author believes that the effects of page deduplication remain an exciting research topic in all kinds of environments.
+
+\section{Future Work}
+\label{sec:future-work}
+
+This thesis enables a variety of further investigations.
+
+For the \ac{spmm} service, subsequent efforts could focus on refining and replacing existing component implementations.
+As mentioned earlier in this thesis, there is a lot of potential for optimisation, for example in terms of better synchronisation or better protection against side-channel attacks.
+This would not only yield performance benefits, but also increase the applicability of the \ac{spmm} service in realistic deployment scenarios.
+Alternatively, it might be a good idea to implement the \ac{spmm} design in another \ac{os} to get valuable feedback on the general validity of the core framework API.
+
+For \ac{l4re}, future work could further integrate the \ac{spmm} service with the \ac{uvmm}.
+For example, the \ac{uvmm} could choose to use idle periods of \ac{vm} inactivity to run the \ac{spmm} service.
