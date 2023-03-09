@@ -128,7 +128,8 @@ These are omitted here.
 
 In summary, these are the different versions of each component that can be freely combined to form arbitrary \ac{cbps} implementations.
 They are easily extensible, they reuse as much of the functionality already provided by \ac{l4re} as possible, and they therefore fit seamlessly into the existing \ac{l4re} ecosystem of services.
-Because of this, the \ac{spmm} service can be used in the typical \ac{l4re} way, which is to load it using the \texttt{ned} loader.
+For this reason, the \ac{spmm} service can be used in the typical \ac{l4re} way, which is to load it using the \texttt{ned} loader.
+Moreover, since this service integrates into the existing memory management infrastructure, arbitrary pre-exisiting software components can be outfitted with \ac{spmm} functionality.
 Currently, the \ac{spmm} configuration is done manually in source code.
 However, the \ac{spmm} framework can easily be extended to allow for dynamic configuration through program flags, which can also be set in the \texttt{ned} script.
 

@@ -1,8 +1,6 @@
 \chapter{Background}
 \label{chap:background}
 
-%TODO: explain memory pressure
-
 The ability to remember information, i.e. to load and store data of some kind, is an essential requirement for the operation of computer systems, dating back to their invention in the early 20\textsuperscript{th} century.
 This prerequisite coined the term \emph{memory} for a component that has been an indispensable part of such systems ever since.
 Over the years, computer memory underwent a wide range of evolutions, absorbing nearly 80 years of technological influences from magnetic tape to modern transistor-based memory cells.
@@ -82,6 +80,7 @@ As described in technical literature \cite{mos2009}, the process of memory pagin
 This relocation of memory pages, also called swapping, ensures that the most frequently used pages are kept in main memory for improved performance, while less frequently used pages are evacuated in order to free up physical memory.
 Using both techniques in conjunction allows applications and services to have a large nearly infinite virtual memory space, while the physical memory is used to cache the most frequently used parts of their address spaces.
 The common practice of allocating more memory to processes than is physically available in the system, therefore relying on memory paging for the system to serve the memory allocations of every process, is called overcommitment.
+Page thrashing occurs when virtual memory resources are overcommitted, leading to a constant loop of page fault handling as memory pages are continuously swapped in and out or mapped back and forth.
 %This shows, that the memory hierarchy, virtual memory and memory paging are closely related concepts in modern computers that work hand in hand.
 
 In modern \acp{os}, the virtual memory subsystem is implemented using a combination of hardware and software \cite{mos2009}.

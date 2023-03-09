@@ -7,16 +7,20 @@
 
 \begin{tikzpicture}
   \begin{axis}[
-      title={Boot Time VM},
+      %title={Boot Time VM},
       xlabel={Compression Density},
-      ylabel={Time [\emph{ms}]},
+      ylabel={Boot Time [\emph{ms}]},
       width=\textwidth,
       height=6cm,
-      enlarge x limits=false,
-      grid=both
+      %enlarge x limits=false,
+      enlargelimits=false,
+      grid=both,
+      ymin=0,
+      ymax=600000
     ]
     \addplot[
       color=cdblue,
+      mark=*,
       loosely dashed,
       error bars/.cd,
       y dir=both,
