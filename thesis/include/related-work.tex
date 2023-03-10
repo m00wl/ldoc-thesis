@@ -12,7 +12,7 @@ The common denominator is that these mechanisms are applied in advance and in a 
 Reactive strategies, on the other hand, remedy memory pressure and contention by means of dynamic measures that are enacted alongside regular system operation.
 This allows them to be more flexible and to adapt to specific system characteristics that only emerge at runtime.
 The trade-off is that such strategies typically consume a small percentage of system resources and \ac{cpu} time themselves in order to examine the system state.
-Representatives of this class include memory overcommitment and aggressive paging \cite{mos2009}, memory ballooning \cite{memory-ballooning2013}, memory compression \cite{osc2018} and also memory deduplication \cite{osc2018} techniques.
+Representatives of this class include memory overcommitment and aggressive paging \cite{mos2009}, memory ballooning \cite{memory-ballooning2013}, memory compression and also memory deduplication techniques \cite{osc2018}.
 
 \Ac{cbps}, a special form of memory deduplication, is a popular reactive strategy because it builds on exisiting virtual memory abstractions and can be implemented using simple page scanning and page comparison algorithms.
 For this reason, many modern, industry-standard, production grade \acp{os} include a \ac{cbps} implementation.
@@ -27,18 +27,18 @@ The educated guess is that these systems also implement some sort of memory dedu
 
 In addition, the topic of page deduplication has attracted interest from the research community.
 In recent years, there have been performance-profitable investigations into stability \cite{spm-page-stability2016, spm-page-stability2017}, classification \cite{spm-classification2014}, and distribution \cite{spm-distribution2019} of memory pages in the address space.
-Especially in virtualised environments, the efficiency of \ac{spm} has increased dramatically \cite{spm-virtualisation2012}.
+Especially in virtualised environments, the efficiency of \ac{cbps} has increased dramatically \cite{spm-virtualisation2012}.
 In addition to software improvements, support for offloading page comparison operations to hardware has been proposed \cite{spm-hardware2019}.
 The drawbacks of \ac{cbps} have also been explored, with research into how to mitigate induced time side-channels \cite{spm-side-channels2018} or how to implement comprehensive page thrashing prevention \cite{spm-thrashing2016}.
 
 In summary, the author notes that existing implementations are either closed-source or tailored to a specific system and its capabilities.
 This thesis removes the tie to a specific \ac{os} and presents a modern, object oriented and \ac{os}-agnostic approach to \ac{cbps}.
-Furthermore, this thesis addresses a gap in the landscape of readily available \ac{spm} implementations.
+Furthermore, this thesis addresses a gap in the landscape of readily available \ac{cbps} implementations.
 To the best of the author's knowledge, no such functionality has yet been implemented in a microkernel-based \ac{os}.
 For this reason, and to highlight its general applicability, this thesis provides a reference implementation of the aforementioned new approach in the \ac{l4re} real-time \ac{os}.
 
 The remaining part of this thesis is organised as follows.
-Chapter \ref{chap:design} presents the overall approach and describes the main design decisions.
+Chapter \ref{chap:design} presents the overall approach and describes the main design decisions of the new framework.
 Chapter \ref{chap:implementation} presents the reference implementation in \ac{l4re}.
 The performance and security evaluation of the implementation is conducted in chaper \ref{chap:evaluation}.
 Chapter \ref{chap:conclusion} summarises the work and the author's conclusions.

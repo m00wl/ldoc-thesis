@@ -7,7 +7,7 @@ Over the years, computer memory underwent a wide range of evolutions, absorbing 
 The general trend of ever-increasing capacity, shrinking size, accelerating access times and thus decreasing cost [\emph{$\frac{\$}{MiB}$}] persists to this day \cite{memory-price}.
 Due to the fact that memory characteristics differ substantially, a multitude of memory management techniques have evolved and perished over the years.
 This chapter provides an overview of the most common memory architecture found in computer systems today, and it illustrates contemporary memory management techniques for administering these resources.
-In addition to that, it explains how \ac{spm} works in principle and how it builds on the memory management subsystem in modern \acp{os}.
+In addition to that, it explains how \ac{cbps} works in principle and how it builds on the memory management subsystem in modern \acp{os}.
 
 \section{Memory Hierarchy}
 \label{sec:memory-hierarchy}
@@ -29,7 +29,7 @@ It is larger and slower than cache, but faster than disk-based storage.
 This is in contrast to other forms of storage that appear later in the hierarchy, such as hard drives or SSDs, which must be accessed through the input/output system of the computer.
 In this sense, it acts as a bridge between the processor and other forms of storage, allowing for quick access to data without needing to wait for slower components to respond.
 Secondary storage and archive storage, being the first non-volatile and most voluminous components, are used to store data that is currently not used.
-Their classification in online and offline storage simply states whether human intervention is needed in order for computer systems to access these memory components or not.
+Their classification in online and offline storage simply states whether human intervention is needed in order for the computer system to access these memory components or not.
 
 \begin{table}
   \centering
@@ -72,7 +72,7 @@ Virtual memory is used by \acp{os} to provide programs running on the computer w
 According to technical literature \cite{mos2009}, the concept behind virtual memory is to create an abstraction of the computer's physical memory, which is divided into fixed-size chunks called pages.
 Each process is given a virtual address space, which it can use to access its own dedicated memory.
 This works by maintaining a mapping from per-process virtual memory pages to the physical memory pages that actually exist.
-In this sense, the physical memory pages are used to back parts of the processes virtual address space, but only those that are used.
+In this sense, the physical memory pages are used to back parts of the process virtual address space, but only those that are used.
 Since processes rarely exhaust all of their virtual address space capacity, this sparse mapping technique provides a convenient solution that additionally enables isolation between processes.
 However, due to limited main memory capacity as well as parallel and concurrent workloads, not all of the data belonging to a specific virtual address space can be stored in physical memory at all times.
 Memory paging is a technique that solves this problem.
@@ -80,7 +80,7 @@ As described in technical literature \cite{mos2009}, the process of memory pagin
 This relocation of memory pages, also called swapping, ensures that the most frequently used pages are kept in main memory for improved performance, while less frequently used pages are evacuated in order to free up physical memory.
 Using both techniques in conjunction allows applications and services to have a large nearly infinite virtual memory space, while the physical memory is used to cache the most frequently used parts of their address spaces.
 The common practice of allocating more memory to processes than is physically available in the system, therefore relying on memory paging for the system to serve the memory allocations of every process, is called overcommitment.
-Page thrashing occurs when virtual memory resources are overcommitted, leading to a constant loop of page fault handling as memory pages are continuously swapped in and out or mapped back and forth.
+Page thrashing can occur when virtual memory resources are overcommitted, leading to a constant loop of page fault handling as memory pages are continuously swapped in and out or mapped back and forth.
 %This shows, that the memory hierarchy, virtual memory and memory paging are closely related concepts in modern computers that work hand in hand.
 
 In modern \acp{os}, the virtual memory subsystem is implemented using a combination of hardware and software \cite{mos2009}.
@@ -97,16 +97,16 @@ If a page is not in memory or has no mapping, the \ac{mmu} triggers a page fault
 It may swap in exisiting memory, allocate new one or raise an exception, depending on the address that is being accessed.
 The software part of the memory management subsystem is responsible for operating this hardware infrastructure.
 It keeps a page table per process and updates it accordingly for every memory allocation and deallocation.
-For every process switch, the page table needs to be switched as well.
-Next to the allocation and deallocation of memory as well as the handling of page faults, it also employs page displacement alogrithms in order to decide which pages to swap out in the case of memory contention.
+%For every process switch, page tables need to be switched and the \ac{tlb} needs to be flushed.
+It also employs page displacement alogrithms in order to decide which pages to swap out in the case of memory contention.
 
-\section{How \acs{spm} works}
-\label{sec:how-spm-works}
+\section{How \acs{cbps} works}
+\label{sec:how-cbps-works}
 
-Page deduplication, and \ac{spm} in particular, build upon this exisiting memory page model.
+Page deduplication, and \ac{cbps} in particular, build upon this exisiting memory page model.
 The idea is to reduce the main memory footprint of applications in a way that frees up physical memory pages which the \ac{os} can reuse for other purposes such as for holding more heterogeneous virtual pages in main memory.
-During \ac{spm} operation, the main memory is continuously scanned for pages that feature the same memory content.
+During \ac{cbps}, the main memory is continuously scanned for pages that feature the same memory content.
 When two matching pages are identified, their mappings in the virtual-to-physical page tables are altered in a way such that both entries point to the same physical page.
 This effectively frees up one page that can be deallocated and returned to the system.
-By sharing the same physical page between two or more mappings, a technique called \ac{cbps}, memory density is increased and memory pressure relieved.
+By sharing the same physical page between two or more mappings, memory density is increased and memory pressure relieved.
 Since this pierces process isolation, where every process is assigned its own private part of memory, special attention needs to be paid to not leak sensitive data or enable unsolicitated side-channels.

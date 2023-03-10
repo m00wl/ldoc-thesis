@@ -21,14 +21,15 @@ As the \ac{l4re} documentation states \cite{l4re-capabilities}, there is a speci
 Furthermore, all capability delegations are recorded in a capability mapping database that resides in the microkernel.
 In \ac{l4re}, the capability system extends to memory resources, meaning that memory access and sharing of memory between threads is implemented with these semantics.
 Since a \ac{cbps} implementation makes heavy use of them, and the mapping database grows very large as a result, it is imperative to increase the default kernel memory size.
+
 In addition to that, the \acf{uvmm} must be adapted to enable \ac{spmm} functionality for \acp{vm}.
 By default, \ac{uvmm} passes any kind of page fault in a \ac{vm} to the corresponding pager as a write page fault.
 This is done for performance reasons, since it is very likely that a read instruction will be followed shortly by a write to the same address.
 In this way, the \ac{uvmm} often saves itself the overhead of handling a page fault twice.
-However, this distinction between read- and write page faults is an essential prerequisite for any kind of \ac{cbps} implementation.
+However, this distinction between read and write page faults is an essential prerequisite for any kind of \ac{cbps} implementation.
 Therefore, the way in which the \ac{uvmm} handles \ac{vm} page faults needs to be changed.
 
-To fit into the existing build and packaging infrastructure of \ac{l4re}, the \ac{spmm} is implemented in an external \ac{l4re} package called \texttt{spmm}.
+To fit into the existing build and packaging infrastructure of \ac{l4re}, the \ac{spmm} is implemented in an external \ac{l4re} package called \emph{spmm}.
 The following section describes the strategy that was used to implement the \ac{spmm} architecture.
 
 \section{Component Implementations}
@@ -43,32 +44,32 @@ These component derivations are described below.
 \subsection*{Manager}
 \label{subsec:manager}
 
-The Manager component mediates the interaction between all the other components.
+The manager component mediates the interaction between all the other components.
 In its simplest form, a valid \ac{cbps} implementation with minimal functionality is just the combination of one instance of each component.
 This is exactly what the \texttt{SimpleManager} models.
 It combines an instance of each component and mediates the communication between them with simple plugbox-style entry points where each API function is wired to its respective component.
-More sophisticated Manager implementations may choose to use several different versions of a component to provide greater flexibility and functionality.
+More sophisticated manager implementations may choose to use several different versions of a component to provide greater flexibility and functionality.
 These are omitted here.
 
 \subsection*{Allocator}
 \label{subsec:allocator}
 
-An Allocator component manages the memory that the \ac{spmm} operates on and hands out to its clients.
-In \ac{l4re}, memory is allocated through Dataspaces and user-level paging \cite{l4re-dataspace}.
+An allocator component manages the memory that the \ac{spmm} operates on and hands out to its clients.
+In \ac{l4re}, memory is allocated through dataspaces and user-level paging \cite{l4re-dataspace}.
 Traditionally, in \ac{l4re}, user-level applications get assigned memory from the root task, which itself obtains patronage of any resource not needed by the microkernel after system boot.
-For the \ac{l4re} implementation, Allocators take advantage of the fact that they can interpose on this assignment chain, and implement their own version of a Dataspace, which acts as a regular Dataspace to its clients, but has additional features.
+For the \ac{l4re} implementation, allocators take advantage of the fact that they can interpose on this pager hierarchy, and implement their own version of a dataspace, which acts as a regular dataspace to its clients, but has additional features.
 This allows them, for example, to handle page faults in lend memory pages, and to reverse the merged state of a page, if necessary.
 
 Since \ac{l4re} provides a port of the C standard library (\texttt{uclibc}), the design of the \texttt{Simple\-L4Re\-Allocator} is straightforward.
-It serves each allocation request with a corresponding call to \texttt{mmap(...)} and simply ignores deallocation requests.
-This offloads memory management to the \texttt{uclibc}-internal algorithm, which translates \texttt{mmap(...)} calls to corresponding \ac{l4re} APIs.
+It serves each allocation request with a corresponding call to \texttt{mmap(\ldots)} and simply ignores deallocation requests.
+This offloads memory management to the \texttt{uclibc}-internal algorithm, which translates \texttt{mmap(\ldots)} calls to the corresponding \ac{l4re} APIs.
 
 A drawback of this prototype is that it only simulates proper memory management.
 Since it ignores memory deallocation requests, no memory is returned to the system, and the main goal of reducing memory pressure in the system is unrealisable.
-Even the \texttt{uclibc} implementation of \texttt{munmap(...)} is inadequate here, because it keeps unmapped pages in an internal reserve for future allocation requests, instead of returning them to the system.
+Even the \texttt{uclibc} implementation of \texttt{munmap(\ldots)} is inadequate here, because it keeps unmapped pages in an internal reserve for future allocation requests, instead of returning them to the system.
 For this reason, the more sophisticated \texttt{Ds\-L4Re\-Allocator} has been designed and implemented.
-It works directly on Dataspaces, allowing it to make use of existing lazy allocation and copy-on-write functionality.
-In addition, this Allocator implementation allows freed memory pages to be returned to the system.
+It works directly on dataspaces, allowing it to make use of existing lazy allocation and copy-on-write functionality in \ac{l4re}.
+In addition, this allocator implementation allows freed memory pages to be returned to the system.
 
 \subsection*{Queue}
 \label{subsec:queue}
@@ -77,26 +78,26 @@ Queue components are container-like objects that collect memory pages of regions
 The \texttt{SimpleQueue} implementation exploits the fact that \ac{l4re} provides a port of the C++ standard library (\texttt{libstdc++}).
 This component prototype is implemented as a simple wrapper around a \texttt{std::list}.
 It also iterates over the memory pages in its collection in a simple FIFO-style order.
-More sophisticated Queue components may choose to offer advanced functionality, such as implementing different iteration patterns or classifying pages according to certain priorities.
+More sophisticated queue components may choose to offer advanced functionality, such as implementing different iteration patterns or classifying pages according to certain priorities.
 These are omitted here.
 
 \subsection*{Worker}
 \label{subsec:worker}
 
-A Worker component scans and compares memory pages in order to identify merge candidates.
+A worker component scans and compares memory pages in order to identify merge candidates.
 The implementation of this component class has the greatest impact on the overall performance metrics of the \ac{spmm}, such as scan speed and relative memory savings.
 As a prototype implementation only, the \texttt{SimpleWorker} is designed for simplicity and low implementation effort rather than efficiency.
-It relies on pairwise page comparisons with \texttt{memcmp(...)} and stores the information about ordered mapping operations in a \texttt{std::map}.
+It relies on pairwise page comparisons with \texttt{memcmp(\ldots)} and stores the information about ordered mapping operations in a \texttt{std::map}.
 Furthermore, it implements only primitive page thrashing prevention by calculating checksums over page contents.
 
 More performance-oriented implementations might choose to change the comparison operation to be performed on hash values which are calculated over page contents.
 In addition, storing page information in a special red-black tree, similar to what \ac{ksm} does in Linux \cite{ksm2009}, would significantly improve page comparison and page lookup times.
-There are ongoing efforts for improved Worker implementations, but they are not discussed here.
+There are ongoing efforts for improved worker implementations, but they are not discussed here.
 
 \subsection*{Memory}
 \label{subsec:memory}
 
-A Memory component manipulates virtual page mappings in the underlying \ac{os}.
+A memory component manipulates virtual page mappings in the underlying \ac{os}.
 According to the microkernel philosophy \cite{liedtke1995}, the concept of virtual memory is essential for protection and must reside in the microkernel.
 Fortunately, however, \ac{l4re} provides the \texttt{L4::Task} interface and flexpage-based \ac{ipc}.
 Combined with object capabilities, these abstractions provide a convenient way to manipulate virtual page mappings from userspace.
@@ -113,12 +114,12 @@ The \texttt{SimpleLock} version of this component simply employs hard serialisat
 It wraps both of its API functions around a \texttt{std::recursive\_mutex}, again taking advantage of the C++ standard library in \ac{l4re}.
 This approach omits significant performance optimisations by assuming the worst-case scenario, where both control flows operate on the same memory page, by default.
 More sophisticated versions of this component can be fine-tuned to special application scenarios, using formal verification methods to prove properties such as deadlock and starvation freedom.
-There are ongoing efforts for improved Lock implementations, but these are not discussed here.
+There are ongoing efforts for improved lock implementations, but these are not discussed here.
 
 \subsection*{Statistics}
 \label{subsec:statistics}
 
-The Statistics component provides information about the \ac{spmm} operation at runtime.
+The statistics component provides information about the \ac{spmm} operation at runtime.
 The implementation of the \texttt{SimpleStatistics} version only implements the four required counters and a thread to print their values.
 Other implementations may choose to derive further evaluation metrics or to feed back this information in order to allow the \ac{spmm} to take consequential actions.
 These are omitted here.
@@ -126,7 +127,7 @@ These are omitted here.
 \section{How to use the \acs{spmm}}
 \label{sec:how-to-use-the-spmm}
 
-In summary, these are the different versions of each component that can be freely combined to form arbitrary \ac{cbps} implementations.
+In summary, at the time of writing, these are the available versions of each component that can be freely combined to form arbitrary \ac{cbps} implementations.
 They are easily extensible, they reuse as much of the functionality already provided by \ac{l4re} as possible, and they therefore fit seamlessly into the existing \ac{l4re} ecosystem of services.
 For this reason, the \ac{spmm} service can be used in the typical \ac{l4re} way, which is to load it using the \texttt{ned} loader.
 Moreover, since this service integrates into the existing memory management infrastructure, arbitrary pre-exisiting software components can be outfitted with \ac{spmm} functionality.

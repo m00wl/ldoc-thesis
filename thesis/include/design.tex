@@ -25,7 +25,7 @@ Pages in $Imm$, on the other hand, are strictly read-only and their content rema
 \section{Objective}
 \label{sec:objective}
 
-The goal of the \ac{spmm} component is to provide a flexible, generic framework for building various \ac{cbps} implementations.
+The goal of the \ac{spmm} component is to provide a flexible and generic framework for building various \ac{cbps} implementations.
 Therefore, the main goal is to be able to establish any reasonable $\sigma_{P}$ mapping in the system.
 To achieve this, the \ac{spmm} must either manipulate hardware page tables directly, or take advantage of existing virtual memory abstractions in the \ac{os}'s memory subsystem.
 The specific form of the $\sigma_{P}$ mapping is directly influenced by the algorithm used to scan and compare client address space regions.
@@ -49,7 +49,7 @@ It must keep track of the registration of client address space regions ($R_{c_i}
 It must also be able to modify the \ac{os}-internal representation of these regions by mapping its own pages to them (applying $\sigma_P$), and it must keep track of the mapping operations applied.
 Finally, given the comprehensive knowledge of these applied mappings (the form of $\sigma_P$), the \ac{spmm} should be able to reason about its operational efficiency, take consequent actions, and present runtime statistics.
 
-According to the principle of separation of concerns, where each responsibility of a software is encapsulated in a distinct part of it \cite{soc1982}, the author decomposes the \ac{spmm} functionality into the following six components: \textit{Allocator},  \textit{Queue}, \textit{Worker}, \textit{Memory}, \textit{Lock} and \textit{Statistics}.
+According to the principle of separation of concerns, where each responsibility of a software is encapsulated in a distinct part of it \cite{soc1982}, the author decomposes the \ac{spmm} functionality into the following six components: \emph{Allocator},  \emph{Queue}, \emph{Worker}, \emph{Memory}, \emph{Lock} and \emph{Statistics}.
 These components will be described below.
 
 \section{Components}
@@ -58,43 +58,43 @@ These components will be described below.
 \subsection*{Allocator}
 \label{subsec:allocator}
 
-The Allocator component provides an interface for memory allocation and deallocation functionality.
+The allocator component provides an interface for memory allocation and deallocation functionality.
 Allocator components manage the set $P$, which is defined as the memory on which the \ac{spmm} operates.
-They provide the functions \texttt{allocate\_page(...)} and \texttt{free\_page(...)} which other components can use to request and return memory pages.
+They provide the functions \texttt{allocate\_page(\ldots)} and \texttt{free\_page(\ldots)} which other components can use to request and return memory pages.
 In addition, they also act as pagers and handle page faults that occur on memory pages under their administration.
-The function \texttt{handle\_page\_fault(...)} is called by the \ac{os} for such a fault.
+The function \texttt{handle\_page\_fault(\ldots)} is called by the \ac{os} for such faults.
 
 \subsection*{Queue}
 \label{subsec:queue}
 
 Queue components implement an interface to collect memory regions registered for \ac{spmm} operation.
 They implement the accounting functionality needed to record all $R_{c_i}$ registrations.
-The functions \texttt{register\_page(...)} and \texttt{unregister\_page(...)} can be used to subscribe/unsubscribe single pages or larger memory regions to/from the \ac{spmm} service.
-In addition to that, a Queue implements the function \texttt{get\_next\_page(...)} to provide iterator-style page-granular access to memory regions in its collection.
+The functions \texttt{register\_page(\ldots)} and \texttt{unregister\_page(\ldots)} can be used to subscribe/unsubscribe single pages or larger memory regions to/from the \ac{spmm} service.
+In addition to that, a queue implements the function \texttt{get\_next\_page(\ldots)} to provide iterator-style page-granular access to memory regions in its collection.
 
 \subsection*{Worker}
 \label{subsec:Worker}
 
-A Worker component provides an interface to functionality for identifying mergable memory areas.
+A worker component provides an interface to functionality for identifying mergable memory areas.
 These components are started by their \texttt{run()} function and they periodically scan through the $R_{c_i}$ sets to identify merge candidates.
-When a Worker identifies a pair of pages with matching content, it can initiate a merge operation, effectively extending the $\sigma_P$ mapping.
-It is likely that Workers will want to keep track of the content and status of pages already scanned and merged (their view of $\sigma_P$).
-Therefore, they implement the function \texttt{notify(...)} which other components can use to inform them of page unmerge operations.
+When a worker identifies a pair of pages with matching content, it can initiate a merge operation, effectively extending the $\sigma_P$ mapping.
+It is likely that workers will want to keep track of the content and status of pages already scanned and merged (their view of $\sigma_P$).
+Therefore, they implement the function \texttt{notify(\ldots)} which other components can call to inform them of page unmerge operations.
 
 \subsection*{Memory}
 \label{subsec:Memory}
 
 Memory components implement an interface that provides \ac{os}-specific virtual memory functionality.
-The functions \texttt{merge\_pages(...)} and \texttt{unmerge\_page(...)} manipulate virtual page mappings in the underlying \ac{os}.
+The functions \texttt{merge\_pages(\ldots)} and \texttt{unmerge\_page(\ldots)} manipulate virtual page mappings in the underlying \ac{os}.
 Other components can call these functions to make multiple virtual pages map to a single shared physical page, or to split single virtual pages from this shared mapping and provide them with individual private memory.
 In other words, memory components are responsible for applying the $\sigma_P$ mapping in the system.
 
 \subsection*{Lock}
 \label{subsec:Lock}
 
-The Lock component provides an interface for memory access synchronisation functionality.
+The lock component provides an interface for memory access synchronisation functionality.
 Components of this class help to ensure deadlock- and race-free access to the regions of client memory on which the \ac{spmm} operates.
-Other components can use the functions \texttt{lock\_page(...)} and \texttt{unlock\_page(...)} to request or release page-granular exclusive memory access from a Lock in order to protect critical sections of their execution.
+Other components can use the functions \texttt{lock\_page(\ldots)} and \texttt{unlock\_page(\ldots)} to request or release page-granular exclusive memory access from a lock in order to protect critical sections of their execution.
 Each page can be locked by only one thread at a time.
 Furthermore, a single thread can acquire and hold locks to multiple pages simultaneously.
 These components help to enforce the required security properties of $\sigma_P$ mentioned in section \ref{sec:objective}.
@@ -102,10 +102,10 @@ These components help to enforce the required security properties of $\sigma_P$ 
 \subsection*{Statistics}
 \label{subsec:statistics}
 
-A Statistics component supplies an interface for statistics about \ac{spmm} runtime and its operational efficiency.
+A statistics component supplies an interface for statistics about \ac{spmm} runtime and its operational efficiency.
 This component reveals information about the form of the $\sigma_P$ mapping and its effect on the system.
-To achieve comprehensive bookkeeping with minimal overhead, a Statistics component must implement at least 4 simple counters, which are described in table \ref{tab:statistics-counters}.
-The functions \texttt{increment\_counter(...)}, \texttt{decrement\_counter(...)} and \texttt{read\_counter(...)} can be used to update and read individual counter values.
+To achieve comprehensive bookkeeping with minimal overhead, a statistics component must implement at least 4 simple counters, which are described in table \ref{tab:statistics-counters}.
+The functions \texttt{increment\_counter(\ldots)}, \texttt{decrement\_counter(\ldots)} and \texttt{read\_counter(\ldots)} can be used to update and read individual counter values.
 More sophisticated evaluation parameters might be derived from these basic variables.
 
 \begin{table}
@@ -120,9 +120,11 @@ More sophisticated evaluation parameters might be derived from these basic varia
     full\_scans     & 0                                                             & how many times all $R_{c_i}$ sets have been scanned                                                  \\
     \hline
   \end{tabularx}
-  \caption{Basic counters of Statistics components}
+  \caption{Basic Counters of Statistics Components}
   \label{tab:statistics-counters}
 \end{table}
+
+\subsection*{}
 
 Taken together, these six components make up for all the required functionality of the \ac{spmm}. 
 For each component, the high-level functionality has been defined, but the concrete execution behaviour is highly dependent on the nature of the underlying algorithm or implementation strategy.
@@ -135,31 +137,31 @@ This allows to manifacture arbitrary versions of these components with different
 The combination of these component functions has the aim to sculpt two concrete judicious control flows.
 At their core, they resemble counteracting program sequences whose execution is arbitrarily interleaved at system runtime.
 On the one hand, there is the attempt to increase memory density by searching for pages with matching content and merging them.
-After initialisation, Allocator components handle client requests by allocating memory pages and by registering them with a Queue component.
-In parallel, Worker components, once started, continuously retrieve and scan memory pages from a Queue component.
-They identify possible merge candidates and, if appropriate, order a merge operation at a Memory component.
+After initialisation, allocator components handle client requests by allocating memory pages and by registering them with a queue component.
+In parallel, worker components, once started, continuously retrieve and scan memory pages from a queue component.
+They identify possible merge candidates and, if appropriate, order a merge operation at a memory component.
 The resulting trend is a growing set of shared read-only pages in the system (pages move from $Vol$ to $Imm$) and therefore a reduced overall memory usage.
 On the other hand, client processes running on the system also want to progress.
 They usually require writable memory regions for their operation, and they trigger page faults when they access a memory page that was previously merged.
-In order not to hinder program execution, an Allocator handles such a fault by reversing the merge operation and by mapping back an individual non-shared memory page.
+In order not to hinder program execution, an allocator handles such a fault by reversing the merge operation and by mapping back an individual non-shared memory page.
 This trend counteracts the previous one by increasing memory usage (pages move from $Imm$ to $Vol$) and thus decreasing the overall memory density in the system.
 The balance between these two control flows can be fine-tuned using component specific configuration parameters.
 
 The described approach raises the question of how components can interact with each other.
 The mediator design pattern is used to make room for flexible component arrangements and fine-grained control over component interaction.
-By doing so, two additional components are introduced.
-The Component component acts as a an enclosing parent class.
+By doing so, two additional components classes are introduced.
+The component class acts as a an enclosing parent class.
 Every other component from section \ref{sec:components} inherits from this base class.
-The Manager component then acts as an intermediary, being the first entry point for any invocation of a component function.
-Different implementations of this Manager can depict arbitrary relations and interactions between at least one or more instances of each component.
-For this reason, Managers must implement an entry point for \textit{every} function of \textit{every} component that they manage.
+The manager component then acts as an intermediary, being the first entry point for any invocation of a component function.
+Different implementations of this manager can depict arbitrary relations and interactions between at least one or more instances of each component.
+For this reason, managers must implement an entry point for \emph{every} function of \emph{every} component that they manage.
 Figure \ref{fig:umlcd} illustrates the total set of components, their functions, and their overall relationship in the form of an UML class diagram.
 
 \begin{figure}
   \centering
   \includestandalone[angle=90,height=\textheight,keepaspectratio]{figures/uml-class-diagram}
-  \caption{UML class diagram of the \acs{spmm}}
+  \caption{UML Class Diagram of the \acs{spmm}}
   \label{fig:umlcd}
 \end{figure}
 
-The next chapter outlines the implementation of this design in the industry-proven, production-ready \ac{l4re} \ac{os}.
+The next chapter outlines the implementation of this design in the industry-proven, production-ready \ac{l4re} real-time\ac{os}.

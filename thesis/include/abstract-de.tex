@@ -1,14 +1,10 @@
-Deutsch.
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-Eu tincidunt tortor aliquam nulla facilisi cras.
-Curabitur gravida arcu ac tortor dignissim convallis aenean et tortor.
-Nam aliquam sem et tortor consequat.
-Diam phasellus vestibulum lorem sed risus ultricies tristique nulla.
-Elit sed vulputate mi sit amet mauris.
-Eu sem integer vitae justo eget magna fermentum iaculis.
-Eget nunc scelerisque viverra mauris.
-Amet nulla facilisi morbi tempus iaculis urna.
-Risus nec feugiat in fermentum posuere urna nec.
-Aenean euismod elementum nisi quis eleifend quam.
-Vulputate enim nulla aliquet porttitor.
-Vel facilisis volutpat est velit egestas.
+Eine effiziente Speicherverwaltung ist in modernen Computern von entscheidender Bedeutung, um sicherzustellen, dass die verfügbaren Speicherressourcen optimal genutzt werden.
+Insbesondere in virtualisierten Umgebungen und in Szenarien mit mehreren Anwendern stellt die Speicherredundanz eine große Belastung für ein System dar, da sie den Speicherdruck erhöht, der auf das System wirkt.
+Die Anwendung von Techniken zur Seitendeduplikation ist eine gängige Methode, um diesen Effekt abzumildern.
+Aus diesem Grund sind heute Implementierungen für das inhaltsbasierte Teilen von Speicherseiten in einer Vielzahl von Betriebssystemen und Hypervisoren verfügbar.
+
+Diese Arbeit erforscht die Konzepte der Speicherseitendeduplikation und stellt \acs{spmm} vor, einen neuen Ansatz für das inhaltsbasierte Teilen von Speicherseiten.
+Der Autor zeigt, dass ein durchdachtes Softwaredesign und auswechselbare Komponenten die Erstellung eines flexiblen und betriebssystemunabhängigen Frameworks ermöglichen, welches beliebige Deduplikationsstrategien und die Anpassung an eine Vielzahl von Anwendungsszenarien erlaubt.
+Darüber hinaus schließt diese Arbeit eine Lücke in der Landschaft der öffentlich verfügbaren Speicherseitendeduplikationsimplementierungen, indem sie die erste Implementierung in einem Mikrokernel-basierten System bereitstellt.
+Die Referenzimplementierung in \acs{l4re} erreicht Scangeschwindigkeiten von bis zu 50$\frac{MiB}{s}$.
+Für eine beispielhafte Kompressionsarbeitslast in einer virtualisierten Umgebung zeigt der Autor, dass \acs{spmm} in \acs{l4re} eine konstante Speichereinsparung von mindestens 37\% erreicht, während ein durchschnittlicher Overhead von nur 57,38\% entsteht.

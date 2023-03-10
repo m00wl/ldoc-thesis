@@ -1,15 +1,15 @@
 \chapter{Introduction}
 \label{chap:introduction}
 
-Efficient memory management is crucial in modern computers to ensure that available memory resources are used optimally.
-On the one hand, proper memory management plays a vital role in achieving perfect resource utilisation and can enable high performance gains through optimisation.
-On the other hand, poor memory management often results in memory leaks, fragmentation, or more serious consequences like system crashes, failures or undetected malfunctions \cite{mm-study2016}.
+The management of memory is a fundamental task in modern computers.
+On the one hand, proper memory management plays a vital role in achieving optimal resource utilisation and can enable high performance gains through optimisation.
+On the other hand, poor memory management might result in memory leaks, fragmentation, or more serious consequences like system crashes, failures or undetected malfunctions \cite{mm-study2016}.
 Reasonable memory management techniques are key factors that help to avoid these problems and that ensure that the system runs smoothly and responsively.
 Therefore, an effective way for systems to manage memory resources is not only desirable, but necessary.
 
 In recent years, two trends have emerged in computing infrastructure.
-Cloud computing has seen a massive surge in popularity and adoption, as businesses and organizations seek to leverage the benefits of cloud-based technology to improve their \ac{it} operations and reduce costs.
-The abundance of publicly available cloud platforms, such as Google’s Compute Engine \cite{google-compute-engine}, Amazon’s EC2 \cite{aws-ec2}, IBM’s Cloud \cite{ibm-cloud}, and Microsoft’s Azure \cite{microsoft-azure} provides clients ubiquitous and effortless access to scalable, flexible, and cost-effective \ac{it} resources, including compute, storage, and network infrastructure.
+Cloud computing has seen a massive surge in popularity and adoption, as businesses and organizations seek to leverage the benefits of cloud-based technology to improve their \acs{it} operations and reduce costs.
+The abundance of publicly available cloud platforms, such as Google’s Compute Engine \cite{google-compute-engine}, Amazon’s EC2 \cite{aws-ec2}, IBM’s Cloud \cite{ibm-cloud}, and Microsoft’s Azure \cite{microsoft-azure} provides clients ubiquitous and effortless access to scalable, flexible, and cost-effective \acs{it} resources, including compute, storage, and network infrastructure.
 This has made the cloud an attractive solution for a wide range of applications, from software development to data analysis and machine learning.
 Business models like \ac{iaas}, \ac{saas}, and Serverless Computing thrive and can be considered a major driver of growth as well.
 According to recent industry reports \cite{gartner2022}, the global cloud computing market is expected to grow even further at a rapid pace, with spending on cloud services projected to reach hundreds of billions of dollars in the coming years.
@@ -20,9 +20,9 @@ Leading analytic market insights \cite{iotanalytics2022} predict the number of g
 Both trends paint the picture of a distributed decentralised computing infrastructure spanning from large-scale warehouse-style computers in datacentres to smaller resource-constrained \ac{iot} devices at the edge.
 Due to the vast differences in dimension, cost as well as operational domain, computer systems start to gravitate towards specialisation and to adopt task-specific heterogeneous hardware.
 This makes their operation based on generalised assumptions increasingly unsustainable.
-Metrics such as scalability, security, reliability, cost savings or power efficiency, are almost exclusively optimised in a domain-specific fashion.
-Although these metrics are of varying importance in the highly diverse landscape of modern computing infrastructure, what they have in common is that all of them are directly influenced by the strategy under which available system resources are utilised.
-This observation further reinforces the important role of flexible and efficient memory management techniques in modern \acp{os}.
+Metrics such as scalability, security, reliability, cost savings or power efficiency, are becoming increasingly important.
+Although these metrics vary greatly in the highly diverse landscape of modern computing infrastructure, what they have in common is that all of them are directly influenced by the strategy under which available system resources are utilised.
+This observation further reinforces the important role of flexible and domain-specific memory management techniques in modern \acp{os}.
 
 Cloud computing is based on virtualisation technology, which allows multiple service instances or \acp{vm} to run on a single physical computer.
 Time-bound resources, such as access to the \ac{cpu} or various accelerator cards, are typically multiplexed, but space-bound resources, such as system memory, are provisioned statically on a per-client basis.
@@ -30,14 +30,14 @@ As a result, \acp{vm} experience a large overall memory footprint and the main m
 This development is forcing cloud providers to equip machines with hundreds of GiB of memory, which is not only expensive and increases the financial burden on customers, but also amplifies power consumption.
 Minimising the memory footprint is equally important for \Ac{iot} devices.
 Inefficient memory usage results in higher power consumption, slower processing times, and increased wear and tear on hardware components.
-For this class of devices, such symptoms are actively avoided at all costs, as minimal production expenses due to the resource-constrained nature of hardware components and longevity in remote deployments are key.
+For this class of devices, such symptoms need to be avoided at all costs, as minimal production expenses due to the resource-constrained nature of hardware components and longevity in remote deployments are key.
 
-An effective way to minimise memory footprints and reduce overall memory pressure in systems is to use page deduplication techniques such as \ac{spm}.
+An effective way to minimise memory footprints and reduce overall memory pressure in a system is to use page deduplication techniques such as \acf{cbps}.
 Due to redundant software instances or replicated data, memory duplication, where multiple copies of the same data are stored at different addresses in memory, occurs as a common phenomenon.
-By identifying and merging these matching areas of memory, \ac{spm} can free up and return memory to the system that otherwise would be occupied by redundant data.
-In this sense, \ac{spm} increases memory density in order to reduce memory pressure.
+By identifying and merging these matching areas of memory, a \ac{cbps} implementation can free up and return memory to the system that otherwise would be occupied by redundant data.
+In this sense, \ac{cbps} increases memory density in order to reduce memory pressure.
 
-This large document thesis aims to explore the potential of \ac{spm} as a technique for improving overall memory utilisation.
+This large document thesis aims to explore the potential of \ac{cbps} as a technique for improving overall memory utilisation.
 The objective of this thesis is to analyse the underlying principles and provide a generalised, holistic and \ac{os}-agnostic approach to page deduplication in modern \acp{os}.
-Furthermore, this thesis aims to provide a reference implementation and to address some of the challenges and security considerations associated with implementing \ac{spm} functionality in the \ac{l4re} \ac{os}.
+Furthermore, this thesis aims to provide a reference implementation and to address some of the challenges and security considerations associated with implementing \ac{cbps} functionality in the \ac{l4re} real-time \ac{os}.
 The results of this thesis will give valuable insights into the design and implementation of memory management algorithms, and hopefully benefit the development of future \acp{os} that will be more efficient and effective in utilising memory resources.
