@@ -1,0 +1,26 @@
+\documentclass[17pt,aspectratio=169,english]{beamer}
+
+\usepackage{babel}
+\usepackage[babel]{microtype}
+\usepackage[backend=biber,style=numeric,sorting=none]{biblatex}
+\addbibresource{lit.bib}
+
+\usetheme{Madrid}
+\beamertemplatenavigationsymbolsempty
+\setbeamertemplate{title page}[default][colsep=-4bp,rounded=false,shadow=false]
+\setbeamercolor{titlelike}{parent=structure,bg=white}
+\setbeamertemplate{section in toc}[square]
+\setbeamertemplate{itemize items}[triangle]
+
+\begin{document}
+
+\input{include/titlepage}
+\input{include/motivation}
+\input{include/outline}
+\input{include/design}
+\input{include/implementation}
+\input{include/evaluation}
+\input{include/conclusion}
+\input{include/closing}
+
+\end{document}
