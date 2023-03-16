@@ -14,14 +14,14 @@ This allows them to be more flexible and to adapt to specific system characteris
 The trade-off is that such strategies typically consume a small percentage of system resources and \ac{cpu} time themselves in order to examine the system state.
 Representatives of this class include memory overcommitment and aggressive paging \cite{mos2009}, memory ballooning \cite{memory-ballooning2013}, memory compression and also memory deduplication techniques \cite{osc2018}.
 
-\Ac{cbps}, a special form of memory deduplication, is a popular reactive strategy because it builds on exisiting virtual memory abstractions and can be implemented using simple page scanning and page comparison algorithms.
+\Acf{cbps}, a special form of memory deduplication, is a popular reactive strategy because it builds on exisiting virtual memory abstractions and can be implemented using simple page scanning and page comparison algorithms.
 For this reason, many modern, industry-standard, production grade \acp{os} include a \ac{cbps} implementation.
 In Linux, there is \ac{ksm} \cite{ksm} which implements a daemon that allows anonymous, private pages to be shared across the system.
 This, combined with the \ac{kvm} feature \cite{kvm}, makes Linux a very potent and popular choice for an open-source hypervisor.
 VMware ESXi implements \ac{tps} \cite{vmware-tps2021}, which is a closed-source, proprietary feature that is protected by US patents.
 It allows redundant copies of memory pages to be eliminated by comparing hash values of page contents, and is therefore also a derivative of \ac{cbps}.
 There is also IBM Active Memory Deduplication \cite{ibm-amd2012} and efforts to add page deduplication functionality to the Xen hypervisor \cite{vmdedup2014}, which have similiar goals and functionality.
-The author has not been able to find reliable information about \ac{cbps} techniques in other modern \acp{os} such as Microsoft Windows \cite{microsoft-windows} or Apple macOS \cite{apple-macos}.
+I have not been able to find reliable information about \ac{cbps} techniques in other modern \acp{os} such as Microsoft Windows \cite{microsoft-windows} or Apple macOS \cite{apple-macos}.
 This may be due to their closed-source nature.
 The educated guess is that these systems also implement some sort of memory deduplication mechanisms, but they are either discontinued, disabled or severely restricted in their operation due to security and privacy concerns.
 
@@ -31,15 +31,14 @@ Especially in virtualised environments, the efficiency of \ac{cbps} has increase
 In addition to software improvements, support for offloading page comparison operations to hardware has been proposed \cite{spm-hardware2019}.
 The drawbacks of \ac{cbps} have also been explored, with research into how to mitigate induced time side-channels \cite{spm-side-channels2018} or how to implement comprehensive page thrashing prevention \cite{spm-thrashing2016}.
 
-In summary, the author notes that existing implementations are either closed-source or tailored to a specific system and its capabilities.
+In summary, I note that existing implementations are either closed-source or tailored to a specific system and its capabilities.
 This thesis removes the tie to a specific \ac{os} and presents a modern, object oriented and \ac{os}-agnostic approach to \ac{cbps}.
 Furthermore, this thesis addresses a gap in the landscape of readily available \ac{cbps} implementations.
-To the best of the author's knowledge, no such functionality has yet been implemented in a microkernel-based \ac{os}.
+To the best of my knowledge, no such functionality has yet been implemented in a microkernel-based \ac{os}.
 For this reason, and to highlight its general applicability, this thesis provides a reference implementation of the aforementioned new approach in the \ac{l4re} real-time \ac{os}.
 
 The remaining part of this thesis is organised as follows.
 Chapter \ref{chap:design} presents the overall approach and describes the main design decisions of the new framework.
 Chapter \ref{chap:implementation} presents the reference implementation in \ac{l4re}.
 The performance and security evaluation of the implementation is conducted in chaper \ref{chap:evaluation}.
-Chapter \ref{chap:conclusion} summarises the work and the author's conclusions.
-%In chapter \ref{chap:summary} ?
+Chapter \ref{chap:conclusion} summarises the work and my conclusions conclusions.

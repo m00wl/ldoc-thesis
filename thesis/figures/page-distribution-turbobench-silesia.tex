@@ -13,8 +13,9 @@
 \begin{tikzpicture}
   \begin{axis}[
       %title={Page Distribution (Turbobench on Silesia Corpus)},
-      xlabel={Time [\emph{ms}]},
+      xlabel={Time [\emph{h}]},
       ylabel={Pages [\emph{n}]},
+      ymin=0,
       width=\textwidth,
       height=6cm,
       smooth,
@@ -29,7 +30,7 @@
     ]
     table[
       col sep=comma,
-      x=time,
+      x expr=\thisrow{time}/3600000,
       y=pages_unshared,
     ]
     {../../data/page-distribution-turbobench-silesia.csv} \closedcycle;
@@ -39,7 +40,7 @@
     ]
     table[
       col sep=comma,
-      x=time,
+      x expr=\thisrow{time}/3600000,
       y=pages_shared,
     ]
     {../../data/page-distribution-turbobench-silesia.csv} \closedcycle;
@@ -49,7 +50,7 @@
     ]
     table[
       col sep=comma,
-      x=time,
+      x expr=\thisrow{time}/3600000,
       y=pages_saved,
     ]
     {../../data/page-distribution-turbobench-silesia.csv} \closedcycle;

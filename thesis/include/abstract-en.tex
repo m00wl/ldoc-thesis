@@ -4,7 +4,7 @@ The application of page deduplication techniques is a common way to mitigate thi
 For this reason, implementations for \ac{cbps} are available in a multitude of modern \acp{os} and hypervisor software today.
 
 This thesis explores the concepts of page deduplication and presents \acs{spmm}, a novel approach to \ac{cbps}.
-The author shows that deliberate software design and pluggable components allow for the specification of a flexible and \ac{os}-agnostic framework which enables to implement arbitrary \ac{cbps} strategies and to adapt to a wide range of application scenarios.
+I show that deliberate software design and pluggable components allow for the specification of a flexible and \ac{os}-agnostic framework which enables to implement arbitrary \ac{cbps} strategies and to adapt to a wide range of application scenarios.
 In addition to that, this thesis addresses a gap in the landscape of readily available \ac{cbps} implementations by providing the first implementation in a microkernel-based system.
-The reference implementation in \acs{l4re} reaches scan speeds of up to 50$\frac{MiB}{s}$.
-For an exemplary compression workload in a virtualised environment, the author shows that \acs{spmm} in \acs{l4re} achieves a constant memory saving of at least 37\%, while incurring an average overhead of only 57.38\%.
+The reference implementation in the \acf{l4re} reaches scan speeds of up to 50$\frac{MiB}{s}$.
+For an exemplary compression workload in a virtualised environment, I show that \acs{spmm} in \acs{l4re} achieves a constant memory saving of at least 37\%, while incurring an average overhead of only 57.38\%.

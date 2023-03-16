@@ -1,8 +1,8 @@
 \chapter{Evaluation}
 \label{chap:evaluation}
 
-To determine the impact of the \ac{spmm} service on memory usage and application performance, the author conducts various measurements using the component implementations described in chapter \ref{chap:implementation}.
-Furthermore, the author examines the security properties of the \ac{spmm} service.
+To determine the impact of the \ac{spmm} service on memory usage and application performance, I conduct various measurements using the component implementations described in chapter \ref{chap:implementation}.
+Furthermore, I examine the security properties of the \ac{spmm} service.
 
 \section{Performance Evaluation}
 \label{sec:performance-evaluation}
@@ -39,20 +39,20 @@ As we can see from the figure, the scan speed decreases as the size of the regis
 For a memory size of 1MiB it scans at 50$\frac{MiB}{s}$ but slows down to as low as 2.97$\frac{MiB}{s}$ for regions of 256MiB.
 
 In the suboptimal case, the application software uses the same memory setup, but additionally numbers the last byte(s) of each page in ascending order.
-This ensures that each page is different, but also maximises the effort needed to find out by \texttt{memcmp(\ldots)} comparisons.
+This ensures that each page is different, and also maximises the effort needed to find out by bytewise comparisons.
 This results in a suboptimal merge ratio because no page can be merged.
 As we can see from the figure, the scan speed also decreases as the size of the memory region increases.
 It starts much lower at 12.01$\frac{MiB}{s}$ for 1MiB regions and slows down to 0.05$\frac{MiB}{s}$ for 256MiB regions.
 
 It can be seen that in both scenarios the scan speed is largely influenced by the underlying memory size and is not constant.
 In the interval examined, the scan speed in the optimal scenario is always higher than in the suboptimal scenario.
-This in in line with the author's expectations.
-On the other hand, the differences in scan speed between the two cases decreasing steadily with increasing memory size, which is contrary to the author's expectations.
+This in in line with my expectations.
+On the other hand, the differences in scan speed between the two cases decreasing steadily with increasing memory size, which is contrary to my expectations.
 The implementation of the worker component has the biggest influence on the scan speed.
 The \texttt{Simple\-Worker} stores pages for which no merge partner could be found in an internal buffer.
 Subsequent pages are compared against already merged pages and all the pages in the buffer before being added to the end of the buffer.
 Therefore, one would expect the scan speeds in both scenarios to diverge and drift apart as memory sizes increase.
-The author makes the following assumption.
+I make the following assumption.
 As the memory size and the number of pages to be processed increases, the overhead caused by internal data structures such as lists and trees becomes increasingly important.
 This could happen to the point where it accounts for the majority of the time spent during the scan operation.
 The actual differences in memory comparison times are overshadowed by the management overhead and the scan speed succumbs to background noise.
@@ -90,17 +90,18 @@ The rest of the memory is initially zeroed out.
 \label{subsubsec:ex1}
 
 The first experiment performs a static analysis of the memory footprint of the benchmark \ac{vm}.
-Even before the \ac{vm} is started, there are memory savings achievable, because it can be condensed by means of page deduplication.
-This stems from pre-existing memory redundancy in the \ac{vm} image, e.g. induced by all the unused initial zero pages.
+Even before the \ac{vm} is started, there are memory savings achievable, because the \ac{vm} can be condensed by means of page deduplication.
+This potential stems from pre-existing memory redundancy in the \ac{vm} image, e.g. induced by all the unused initial zero pages.
 The initial 262144 unshared memory pages can be reduced to a total of 61513 unshared and 328 shared pages.
 This is a saving of 200303 memory pages and corresponds to a relative memory saving of approximately 76\%.
 Figure \ref{fig:page-distribution-vm} shows the page distribution over time when the \ac{spmm} service is applied to the benchmark \ac{vm} image.
+Since sharing is very effective, the small proportion of 328 shared pages is not rendered visible in the diagram.
 The graph can be divided into two parts.
 Before 917341 ms (\textasciitilde{}15 minutes), scan speed is almost constant but slowly decreases.
 After this time, it fluctuates a lot and causes a staircase-shaped descent of the graph.
 The \ac{vm} image is completely merged after 1241492 ms (\textasciitilde{}21 minutes).
 The differences in scan speed (slope of the graph) again show that \ac{spmm} efficiency is influenced by the contents of the underlying memory region.
-The shape of the graph corresponds to the author's expectations and can be explained by the way in which \ac{uvmm} populates the \ac{ram} dataspace, i.e. the memory layout of the \ac{vm} image.
+The shape of the graph corresponds to my expectations and can be explained by the way in which \ac{uvmm} populates the \ac{ram} dataspace, i.e. the memory layout of the \ac{vm} image.
 \Ac{uvmm} places the Linux kernel image and the device tree blob, which are comparatively small, at the beginning of the image.
 The large root filesystem, on the other hand, is located at the end.
 Therefore, there are only a few unequal data pages at the beginning and the rest are the identical zero pages.
@@ -205,14 +206,14 @@ In particular, at the beginning of the benchmark, when there is only a small amo
 Consequently, page trashing occurs less often as more memory pages are unmerged by the benchmark.
 This leads to an interesting behaviour.
 The processing time of a benchmark data file is not uniform and depends on the position of that file in the sequence of all files that are being processed.
-The author attempts to remove the effects of page thrashing from the execution time by processing each of the 12 benchmark data files at each of the 12 positions and then averaging the execution times per file.
+I attempt to remove the effects of page thrashing from the execution time by processing each of the 12 benchmark data files at each of the 12 positions and then averaging the execution times per file.
 The adjusted, position-independent execution times of each file in the Silesia corpus are depicted in figure \ref{fig:runtime-turbobench-silesia}.
 It can be seen that the overhead is still different for each file and ranges between 16-85\%.
 On average, regardless of file size and processing order, the processing of a benchmark data file has an overhead of 57.38\%.
 Different implementations of the worker component with better thrashing prevention may be able to reduce this overhead even further.
 
 This concludes the evaluation of this \ac{spmm} configuration.
-In the next section, the author adds some remarks about the security of the \ac{spmm} service in general.
+In the next section, I add some remarks about the security of the \ac{spmm} service in general.
 
 \section{Security Evaluation}
 \label{sec:security-evaluation}
@@ -226,7 +227,7 @@ The most common criticisms of \ac{cbps} implementations include:
   \item They are susceptible to timing attacks and may open other unwanted side-channels.
 \end{enumerate}
 
-In this section, the author explores the extent to which these points apply to the \ac{spmm} service in \ac{l4re}.
+In this section, I explore the extent to which these points apply to the \ac{spmm} service in \ac{l4re}.
 
 Regarding the first point, the \ac{spmm} is also unable to prevent the growth of the \ac{tcb}, which is the combination of hardware, software and configuration that must be trusted to enfore security policies in a system \cite{tcsec1986}.
 In addition, the management overhead cannot be completely avoided.
@@ -236,10 +237,11 @@ Therefore, only application-specific \acp{tcb} are affected.
 Furthermore, \ac{spmm} subscription can be flexibly controlled for each memory allocation.
 Due to the microkernel nature of \ac{l4re}, the \ac{spmm} service benefits from excellent isolation of its management overhead and operational failures.
 
-The author argues that the second criticism is entirely preventable in any system, and is merely a legacy of faulty implementations.
+I argue that the second criticism is entirely preventable in any system, and is merely a legacy of faulty implementations.
 Correct memory management and synchronisation is hard, and there is also no proof that the \ac{spmm} implementation is bug-free.
 However, the fact that \ac{spmm} encapsulates all its functionality in separate components makes it easier to understand and to reason about the correctness of the software and its parts.
 
 Finally, in its current form, \ac{spmm} does not implement any protection against time side-channels or other attacks.
-On the contrary, a difference in page fault latency between merged and unmerged pages of a \ac{vm} has been experimentally demonstrated in section \ref{sec:performance-evaluation}.
+On the contrary, a noticeable difference in page fault latency between merged and unmerged pages of a \ac{vm} has been experimentally demonstrated in section \ref{sec:performance-evaluation}.
 However, by splitting the \ac{spmm} design into individual components, preventative functionality can be added retrospectively without fundamental changes to the core API.
+In addition to that, multiple instances of the \ac{spmm} service can be executed in parallel on a per-user basis, further restricting the influence of induced side-channels.

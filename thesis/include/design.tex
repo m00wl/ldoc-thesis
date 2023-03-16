@@ -9,7 +9,7 @@ Furthermore, it only relies on minimal requirements, such as the hardware implem
 \label{sec:nomenclature}
 
 First of all, it is useful to define a consistent terminology that can be used from here on.
-For this reason, the author proposes the following naming convention.
+For this reason, I propose the following naming convention.
 The component in question will be referred to as the \textit{\acf{spmm}}.
 The \ac{spmm} has a set of clients $C = \{c_1,...,c_n\}$, where each client $c_i$ has a corresponding virtual address space $V_{c_i}$.
 Virtual address spaces are sets of virtual pages $V_{c_i} = \{v_1,...,v_m\}$ and clients register regions of their virtual address spaces (subsets of $V_{c_i}$) for \ac{spmm} operation.
@@ -49,7 +49,7 @@ It must keep track of the registration of client address space regions ($R_{c_i}
 It must also be able to modify the \ac{os}-internal representation of these regions by mapping its own pages to them (applying $\sigma_P$), and it must keep track of the mapping operations applied.
 Finally, given the comprehensive knowledge of these applied mappings (the form of $\sigma_P$), the \ac{spmm} should be able to reason about its operational efficiency, take consequent actions, and present runtime statistics.
 
-According to the principle of separation of concerns, where each responsibility of a software is encapsulated in a distinct part of it \cite{soc1982}, the author decomposes the \ac{spmm} functionality into the following six components: \emph{Allocator},  \emph{Queue}, \emph{Worker}, \emph{Memory}, \emph{Lock} and \emph{Statistics}.
+According to the principle of separation of concerns, where each responsibility of a software is encapsulated in a distinct part of it \cite{soc1982}, I decompose the \ac{spmm} functionality into the following six components: \emph{Allocator},  \emph{Queue}, \emph{Worker}, \emph{Memory}, \emph{Lock} and \emph{Statistics}.
 These components will be described below.
 
 \section{Components}

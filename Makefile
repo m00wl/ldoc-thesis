@@ -1,5 +1,5 @@
 THESIS_DIR = ./thesis
-TALK_DIR	 = ./talk
+TALK_DIR   = ./talk
 
 .PHONY: thesis talk cleanall
 

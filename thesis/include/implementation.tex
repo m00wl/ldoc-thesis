@@ -1,17 +1,17 @@
 \chapter{Implementation}
 \label{chap:implementation}
 
-To analyse the practical relevance and the general applicability of the \ac{spmm} design, the author provides a reference implementation in the \ac{l4re} \ac{os} \cite{l4re}.
+To analyse the practical relevance and the general applicability of the \ac{spmm} design, I provide a reference implementation in the \ac{l4re} \ac{os} \cite{l4re}.
 Changes to the \ac{os} and new code are described in the following sections.
-All architectural and \ac{os}-related remarks refer to \ac{l4re} on \texttt{AArch64}, the 64-bit extension of the Arm architecture family.
+All architectural and \ac{os}-related remarks refer to \ac{l4re} on \texttt{AArch64}, the 64-bit variant of the Arm architecture family.
 The source code for this implementation is publicly available online at \cite{l4re-spm}.
 
 \section{\acs{l4re} Operating System}
 \label{sec:l4re-os}
 
-The \ac{l4re} \acl{os} framework consists of the L4 Fiasco.OC microkernel and a rich user-level runtime environment with basic services for common operations such as program loading, memory management or virtual machine administration.
-Because of the microkernel and its strong security and fault isolation properties at its core, \ac{l4re} \ac{os} can be used in a wide range of application scenarios, even in real-time and high-assurance environments \cite{l4re-industries}.
-Because of this flexibility, and because, to the best of the author's knowledge no such implementation existed in this framework before, \ac{l4re} was chosen as the implementation platform for the \ac{spmm} design.
+The \acl{l4re} consists of the \acs{l4re} microkernel and a rich user-level runtime environment with basic services for common operations such as program loading, memory management or virtual machine administration.
+Because of the microkernel and its strong security and fault isolation properties at its core, \ac{l4re} can be used in a wide range of application scenarios, even in real-time and high-assurance environments \cite{l4re-industries}.
+Because of this flexibility, and because, to the best of my knowledge no such implementation existed in this framework before, \ac{l4re} was chosen as the implementation platform for the \ac{spmm} design.
 
 The required changes to \ac{l4re} are minimal.
 In total, they comprise changes to 2 SLOC.
@@ -22,7 +22,8 @@ Furthermore, all capability delegations are recorded in a capability mapping dat
 In \ac{l4re}, the capability system extends to memory resources, meaning that memory access and sharing of memory between threads is implemented with these semantics.
 Since a \ac{cbps} implementation makes heavy use of them, and the mapping database grows very large as a result, it is imperative to increase the default kernel memory size.
 
-In addition to that, the \acf{uvmm} must be adapted to enable \ac{spmm} functionality for \acp{vm}.
+In addition to that, the \acf{uvmm} can be adapted to enable \ac{spmm} functionality for \acp{vm}.
+Since it is very common to apply \ac{cbps} in virtualised environments and it helps with the evaluation later, I provide a patch for that.
 By default, \ac{uvmm} passes any kind of page fault in a \ac{vm} to the corresponding pager as a write page fault.
 This is done for performance reasons, since it is very likely that a read instruction will be followed shortly by a write to the same address.
 In this way, the \ac{uvmm} often saves itself the overhead of handling a page fault twice.

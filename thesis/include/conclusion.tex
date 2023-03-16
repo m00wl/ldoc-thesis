@@ -1,7 +1,7 @@
 \chapter{Conclusion}
 \label{chap:conclusion}
 
-This large document thesis explored the concept of page deduplication and its potential to reduce the overall memory pressure in a system.
+This study thesis explored the concept of page deduplication and its potential to reduce the overall memory pressure in a system.
 The new \ac{spmm} design presented a flexible and \ac{os}-agnostic approach to \acl{cbps}.
 By encapsulating functionality into distinct components, \ac{spmm} encouraged conscious software design.
 In addition to that, this encapsulation technique allowed a clear and easy-to-use framework to be developed.
@@ -11,7 +11,7 @@ The reference implementation in the \ac{l4re} real-time \ac{os} is another major
 As the first implementation in a microkernel-based system, it underlined the validity and general applicability of the framework design.
 It also enriched the \ac{l4re} ecosystem of service software with \ac{cbps} functionality.
 
-The author provided a comprehensive evaluation of the framework implementation.
+I provided a comprehensive evaluation of the framework implementation.
 The findings of the performance evaluation painted a hopeful picture.
 Even with non-optimised components, the \ac{spmm} scan speed reached up to 50$\frac{MiB}{s}$.
 In addition, for a realistic compression workload in a virtualised environment, \ac{spmm} was able to maintain a permanent memory saving of at least 37\%, while incurring an average overhead of only 57.38\%.
@@ -19,7 +19,7 @@ In terms of security, the evaluation picture was rather bleak.
 The \ac{spmm} inherits the non-negligible management overhead and vulnerability to timing attacks of most \ac{cbps} implementations.
 However, the \ac{spmm} design is very successful in limiting the scope of these effects in the system and explicitly allows for the addition of protective measures in future work.
 
-Given these results, the author believes that the effects of page deduplication remain an exciting research topic in all kinds of environments.
+Given these results, I believe that the effects of page deduplication remain an exciting research topic in all kinds of environments.
 
 \section{Future Work}
 \label{sec:future-work}

@@ -4,7 +4,7 @@ FIG_DIR = ./figures
 
 thesis:
 	make -C $(FIG_DIR) figures
-	latexmk ldoc-thesis.tex
+	latexmk thesis.tex
 
 clean:
 	latexmk -C

@@ -25,8 +25,8 @@ Although these metrics vary greatly in the highly diverse landscape of modern co
 This observation further reinforces the important role of flexible and domain-specific memory management techniques in modern \acp{os}.
 
 Cloud computing is based on virtualisation technology, which allows multiple service instances or \acp{vm} to run on a single physical computer.
-Time-bound resources, such as access to the \ac{cpu} or various accelerator cards, are typically multiplexed, but space-bound resources, such as system memory, are provisioned statically on a per-client basis.
-As a result, \acp{vm} experience a large overall memory footprint and the main memory sizes in datacentre servers are increasingly insufficient \cite{de2008}.
+Time-bound resources, such as access to the \ac{cpu} or various accelerator cards, are typically multiplexed, but space-bound resources, such as system memory, are provisioned static on a per-client basis.
+As a result, \acp{vm} experience a large overall memory footprint and the main memory sizes in datacentre servers are increasingly insufficient \cite{pm2019}.
 This development is forcing cloud providers to equip machines with hundreds of GiB of memory, which is not only expensive and increases the financial burden on customers, but also amplifies power consumption.
 Minimising the memory footprint is equally important for \Ac{iot} devices.
 Inefficient memory usage results in higher power consumption, slower processing times, and increased wear and tear on hardware components.
@@ -37,7 +37,7 @@ Due to redundant software instances or replicated data, memory duplication, wher
 By identifying and merging these matching areas of memory, a \ac{cbps} implementation can free up and return memory to the system that otherwise would be occupied by redundant data.
 In this sense, \ac{cbps} increases memory density in order to reduce memory pressure.
 
-This large document thesis aims to explore the potential of \ac{cbps} as a technique for improving overall memory utilisation.
+This study thesis aims to explore the potential of \ac{cbps} as a technique for improving overall memory utilisation.
 The objective of this thesis is to analyse the underlying principles and provide a generalised, holistic and \ac{os}-agnostic approach to page deduplication in modern \acp{os}.
-Furthermore, this thesis aims to provide a reference implementation and to address some of the challenges and security considerations associated with implementing \ac{cbps} functionality in the \ac{l4re} real-time \ac{os}.
+Furthermore, this thesis aims to provide a reference implementation and to address some of the challenges and security considerations associated with implementing \ac{cbps} functionality in the \acl{l4re}.
 The results of this thesis will give valuable insights into the design and implementation of memory management algorithms, and hopefully benefit the development of future \acp{os} that will be more efficient and effective in utilising memory resources.
