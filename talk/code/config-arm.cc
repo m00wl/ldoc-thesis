@@ -1,4 +1,4 @@
-// file: fiasco/src/kern/arm/config-arm.cpp 
+// file: fiasco/src/kern/arm/config-arm.cpp
 EXTENSION class Config
 {
 public:
