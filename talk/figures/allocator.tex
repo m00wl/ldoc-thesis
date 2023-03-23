@@ -1,0 +1,23 @@
+\documentclass[class=minimal,border=0pt]{standalone}
+
+\usepackage{fontspec}
+\usepackage{caption}
+\usepackage{tudscrfonts}
+\usepackage{tudscrcolor}
+\usepackage[simplified]{pgf-umlcd}
+
+%\renewcommand{\umltextcolor}{black}
+%\renewcommand{\umlfillcolor}{lightgray}
+\renewcommand{\umldrawcolor}{cdblue}
+
+\begin{document}
+
+\begin{tikzpicture}
+  \begin{interface}[]{Allocator}{0,0}
+    \operation[0]{+ allocate\_page(...) : page\_t}
+    \operation[0]{+ free\_page(...)}
+    \operation[0]{+ handle\_page\_fault(...)}
+  \end{interface}
+\end{tikzpicture}
+
+\end{document}

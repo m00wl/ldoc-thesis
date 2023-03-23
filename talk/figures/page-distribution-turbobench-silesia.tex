@@ -1,0 +1,60 @@
+\documentclass[class=minimal,border=0pt]{standalone}
+
+\usepackage{fontspec}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{tudscrcolor}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{patterns}
+
+\begin{document}
+
+\begin{tikzpicture}
+  \begin{axis}[
+      %title={Page Distribution (Turbobench on Silesia Corpus)},
+      height=5cm,
+      width=12cm,
+      xlabel={Time [\emph{h}]},
+      ylabel={Pages [\emph{n}]},
+      ymin=0,
+      smooth,
+      stack plots=y,
+      enlargelimits=false,
+      area legend,
+      legend columns=-1
+    ]
+    \addplot[
+      pattern=north west lines,
+      pattern color=cdorange
+    ]
+    table[
+      col sep=comma,
+      x expr=\thisrow{time}/3600000,
+      y=pages_unshared,
+    ]
+    {../../data/page-distribution-turbobench-silesia.csv} \closedcycle;
+    \addplot[
+      pattern=crosshatch,
+      pattern color=cdgreen
+    ]
+    table[
+      col sep=comma,
+      x expr=\thisrow{time}/3600000,
+      y=pages_shared,
+    ]
+    {../../data/page-distribution-turbobench-silesia.csv} \closedcycle;
+    \addplot[
+      pattern=north east lines,
+      pattern color=cdblue
+    ]
+    table[
+      col sep=comma,
+      x expr=\thisrow{time}/3600000,
+      y=pages_saved,
+    ]
+    {../../data/page-distribution-turbobench-silesia.csv} \closedcycle;
+    \legend{unshared, shared, saved}
+  \end{axis}
+\end{tikzpicture}
+
+\end{document}

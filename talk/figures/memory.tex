@@ -1,0 +1,23 @@
+\documentclass[class=minimal,border=0pt]{standalone}
+
+\usepackage{fontspec}
+\usepackage{caption}
+\usepackage{tudscrfonts}
+\usepackage{tudscrcolor}
+\usepackage[simplified]{pgf-umlcd}
+
+%\renewcommand{\umltextcolor}{black}
+%\renewcommand{\umlfillcolor}{lightgray}
+\renewcommand{\umldrawcolor}{cdblue}
+
+\begin{document}
+
+\begin{tikzpicture}
+  \begin{interface}[]{Memory}{0,0}
+    \operation[0]{+ merge\_pages(...) : error\_t}
+    \operation[0]{+ unmerge\_page(...) : error\_t}
+    \operation[0]{+ is\_merged\_page(...) : bool}
+  \end{interface}
+\end{tikzpicture}
+
+\end{document}

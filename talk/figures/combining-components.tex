@@ -1,0 +1,51 @@
+\documentclass[class=minimal,border=0pt]{standalone}
+
+\usepackage{fontspec}
+\usepackage{caption}
+\usepackage{tudscrfonts}
+\usepackage{tudscrcolor}
+\usepackage[simplified]{pgf-umlcd}
+
+%\renewcommand{\umltextcolor}{black}
+%\renewcommand{\umlfillcolor}{lightgray}
+\renewcommand{\umldrawcolor}{cdblue}
+
+\begin{document}
+
+\begin{tikzpicture}
+  \begin{interface}[text width=7cm]{Manager}{0,0}
+    \operation[0]{+ <component interaction functions>}
+  \end{interface}
+
+  \begin{interface}[text width=7cm]{Component}{9,0}
+    \operation{+ set\_manager(manager : Manager*) : void}
+  \end{interface}
+
+  \begin{class}[text width=2cm]{A}{-2.5,-4}
+    \implement{Component}
+  \end{class}
+
+  \begin{class}[text width=2cm]{Q}{0.3,-4}
+    \implement{Component}
+  \end{class}
+
+  \begin{class}[text width=2cm]{W}{3.1,-4}
+    \implement{Component}
+  \end{class}
+
+  \begin{class}[text width=2cm]{M}{5.9,-4}
+    \implement{Component}
+  \end{class}
+
+  \begin{class}[text width=2cm]{L}{8.7,-4}
+    \implement{Component}
+  \end{class}
+
+  \begin{class}[text width=2cm]{S}{11.5,-4}
+    \implement{Component}
+  \end{class}
+
+  \unidirectionalAssociation{Component}{manager}{1}{Manager}
+\end{tikzpicture}
+
+\end{document}

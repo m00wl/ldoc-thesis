@@ -2,31 +2,73 @@
 \label{sec:evaluation}
 
 \begin{frame}{Evaluation}
-  This is the evaluation.
+  \pause
+  SPMM Configuration:
+  \begin{itemize}
+    \item \texttt{DsL4ReAllocator}.
+    \item \texttt{Simple-*} versions for the rest.
+  \end{itemize}
+  \pause
+  Hardware:
+  \begin{itemize}
+    \item Raspberry Pi 4 Model B (4 GiB).
+  \end{itemize}
 \end{frame}
 
 \subsection{Performance}
 \label{subsec:eval-performance}
 
 \begin{frame}{Performance Evaluation}
-  Theoretical Limits:
+  \pause
+  Theoretical Limits: \emph{Scan Speed}.
+  \vspace*{0.5cm}
+  \begin{figure}
+    \centering
+    \includestandalone[keepaspectratio,scale=1.2]{figures/scan-speed}
+  \end{figure}
 \end{frame}
 
 \begin{frame}{Performance Evaluation}
-  Case Study:
+  Benchmark VM:
+  \begin{itemize}
+    \item 1 CPU Core \& 1 GiB RAM.
+    \item Linux 5.16.1 kernel (\textasciitilde{}30 MiB).
+    \item Ramdisk with root filesystem (\textasciitilde{}256 MiB).
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Performance Evaluation}
-  Case Study: Experiment 1
+  Case Study: \emph{static}.
+  \begin{figure}
+    \centering
+    \includegraphics<1>[keepaspectratio,scale=1.2]{figures/page-distribution-vm}
+    \includegraphics<2>[keepaspectratio,scale=1.2]{figures/boot-time-vm}
+  \end{figure}
 \end{frame}
 
 \begin{frame}{Performance Evaluation}
-  Case Study: Experiment 2
+  Case Study: \emph{dynamic}.
+  \begin{figure}
+    \centering
+    \includegraphics<1>[keepaspectratio,scale=1.2]{figures/page-distribution-turbobench-silesia}
+    \includegraphics<2>[keepaspectratio,scale=1.0]{figures/runtime-turbobench-silesia}
+  \end{figure}
 \end{frame}
 
 \subsection{Security}
 \label{subsec:eval-security}
 
 \begin{frame}{Security Evaluation}
-  This is the security evaluation.
+  \pause
+  Rather bleak:
+  \begin{itemize}
+    \item[\textbf{--}] Unsolicitated side-channels (timing attacks, \dots{}).
+    \item[\textbf{--}] No correctness proof.
+  \end{itemize}
+  \pause
+  However:
+  \begin{itemize}
+    \item[\textbf{+}] Excellent isolation (faults, overhead, \dots{}).
+    \item[\textbf{+}] Flexibility.
+  \end{itemize}
 \end{frame}

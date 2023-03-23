@@ -1,0 +1,23 @@
+\documentclass[class=minimal,border=0pt]{standalone}
+
+\usepackage{fontspec}
+\usepackage{caption}
+\usepackage{tudscrfonts}
+\usepackage{tudscrcolor}
+\usepackage[simplified]{pgf-umlcd}
+
+%\renewcommand{\umltextcolor}{black}
+%\renewcommand{\umlfillcolor}{lightgray}
+\renewcommand{\umldrawcolor}{cdblue}
+
+\begin{document}
+
+\begin{tikzpicture}
+  \begin{interface}[]{Queue}{0,0}
+    \operation[0]{+ register\_page(...)}
+    \operation[0]{+ unregister\_page(...)}
+    \operation[0]{+ get\_next\_page(...) : page\_t}
+  \end{interface}
+\end{tikzpicture}
+
+\end{document}

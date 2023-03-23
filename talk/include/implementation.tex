@@ -1,14 +1,48 @@
 \section{Implementation in L4Re}
 \label{sec:implementation}
 
+\begin{frame}[t,fragile]{Implementation in L4Re}
+  \pause
+  Changes to L4Re: Increase \emph{kernel memory}.
+  \vspace*{0.25cm}
+  \lstinputlisting[language=C++,style=C++]{code/config-arm.cc}
+\end{frame}
+
+\begin{frame}[t,fragile]{Implementation in L4Re}
+  Changes to L4Re: Tweak \emph{uvmm} page fault handling.
+  \vspace*{0.25cm}
+  \lstinputlisting[language=C++,style=C++]{code/ds_mmio_mapper.h}
+\end{frame}
+
 \begin{frame}[t]{Implementation in L4Re}
-  Changes to L4Re:
+  SPMM Core:
+  \vspace*{0.5cm}
+  \begin{figure}
+    \centering
+    \includestandalone[keepaspectratio,scale=0.9]{figures/combining-components}
+  \end{figure}
 \end{frame}
 
 \begin{frame}{Implementation in L4Re}
-  Component Implementations:
+  SPMM Components:
+  \pause
+  \texttt{Simple-*} versions.
+  \begin{itemize}
+    \item Unoptimized, proof-of-concept nature.
+    \item Reuse as much L4Re functionality as possible.
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Implementation in L4Re}
-  How to use the SPMM:
+  SPMM Components: \emph{"better"} versions.
+  \begin{itemize}
+    \item Optimized to specific application scenario.
+    \item Custom design (algorithms, data structures, \ldots).
+    \item \textlangle{}WIP\textrangle{}.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Implementation in L4Re}
+  \centering
+  \emph{Demonstration.}
 \end{frame}

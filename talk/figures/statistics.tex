@@ -1,0 +1,27 @@
+\documentclass[class=minimal,border=0pt]{standalone}
+
+\usepackage{fontspec}
+\usepackage{caption}
+\usepackage{tudscrfonts}
+\usepackage{tudscrcolor}
+\usepackage[simplified]{pgf-umlcd}
+
+%\renewcommand{\umltextcolor}{black}
+%\renewcommand{\umlfillcolor}{lightgray}
+\renewcommand{\umldrawcolor}{cdblue}
+
+\begin{document}
+
+\begin{tikzpicture}
+  \begin{interface}[text width=6cm]{Statistics}{24,-12}
+    \attribute{- pages\_shared = 0 : counter\_t}
+    \attribute{- pages\_sharing = 0 : counter\_t}
+    \attribute{- pages\_unshared = N : counter\_t}
+    \attribute{- full\_scans = 0 : counter\_t}
+    \operation[0]{+ increment\_counter(...)}
+    \operation[0]{+ decrement\_counter(...)}
+    \operation[0]{+ read\_counter(...) : counter\_t}
+  \end{interface}
+\end{tikzpicture}
+
+\end{document}

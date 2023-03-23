@@ -1,0 +1,43 @@
+\documentclass[class=minimal,border=0pt]{standalone}
+
+\usepackage{fontspec}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{tudscrcolor}
+\usepackage{pgfplots}
+
+\begin{document}
+
+\begin{tikzpicture}
+  \begin{axis}[
+      %title={Boot Time VM},
+      height=5cm,
+      width=12cm,
+      xlabel={Compression Density},
+      ylabel={Boot Time [\emph{ms}]},
+      y label style={at={(axis description cs:0.06,0.5)},anchor=south},
+      %enlarge x limits=false,
+      enlargelimits=false,
+      grid=both,
+      ymin=0,
+      ymax=600000
+    ]
+    \addplot[
+      color=cdblue,
+      mark=*,
+      loosely dashed,
+      error bars/.cd,
+      y dir=both,
+      y explicit
+    ]
+    table[
+      col sep=comma,
+      x=compression_density,
+      y=time,
+      y error plus=etime+,
+      y error minus=etime-
+    ]
+    {../../data/boot-time-vm.csv};
+  \end{axis}
+\end{tikzpicture}
+
+\end{document}

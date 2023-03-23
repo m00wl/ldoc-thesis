@@ -1,9 +1,38 @@
 \documentclass[17pt,aspectratio=169,english]{beamer}
 
+
 \usepackage{babel}
 \usepackage[babel]{microtype}
 \usepackage[backend=biber,style=numeric,sorting=none]{biblatex}
 \addbibresource{lit.bib}
+\usepackage[mode=image]{standalone}
+\usepackage{xcolor}
+\usepackage{listings}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolor}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{C++}{
+  backgroundcolor=\color{backcolor},
+  commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta!70},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=b,
+  keepspaces=true,
+  numbers=none,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2,
+  morekeywords={*,l4_addr_t,...}
+}
 
 \usetheme{Madrid}
 \beamertemplatenavigationsymbolsempty

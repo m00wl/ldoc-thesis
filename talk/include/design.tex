@@ -2,28 +2,88 @@
 \label{sec:design}
 
 \begin{frame}{SPMM Design}
+  \centering
+  \emph{Background.}
+\end{frame}
+
+\begin{frame}{SPMM Design}
+  \begin{figure}
+    \centering
+    \includegraphics[keepaspectratio,scale=0.32]{figures/same-page-meme}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{SPMM Design}
   Intuition:
   \begin{itemize}
-    \item test.
-    \item test.
-    \item test.
+    \item<2-> Maintain a set of registered memory regions.
+    \item<3-> Perform a periodic scanning and comparison operation.
+    \item<4-> Alter the OS-internal mapping of memory pages.
+    \item<5-> Reason about operational efficiency.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{SPMM Design}
-  Components:
-  \begin{itemize}
-    \item test.
-    \item test.
-    \item test.
-  \end{itemize}
+  Decomposition into 6 distinct components:
+  \newline
+  \centering
+  \emph{Allocator, Queue, Worker, Memory, Lock} and \emph{Statistics.}
 \end{frame}
 
-\begin{frame}{SPMM Design}
-  Combining Components:
-  \begin{itemize}
-    \item test.
-    \item test.
-    \item test.
-  \end{itemize}
+\begin{frame}[t]{SPMM Design}
+  Component: \emph{Allocator}.
+  \begin{figure}
+    \centering
+    \includestandalone[keepaspectratio,scale=1.5]{figures/allocator}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[t]{SPMM Design}
+  Component: \emph{Queue}.
+  \begin{figure}
+    \centering
+    \includestandalone[keepaspectratio,scale=1.5]{figures/queue}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[t]{SPMM Design}
+  Component: \emph{Worker}.
+  \begin{figure}
+    \centering
+    \includestandalone[keepaspectratio,scale=1.5]{figures/worker}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[t]{SPMM Design}
+  Component: \emph{Memory}.
+  \begin{figure}
+    \centering
+    \includestandalone[keepaspectratio,scale=1.5]{figures/memory}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[t]{SPMM Design}
+  Component: \emph{Lock}.
+  \begin{figure}
+    \centering
+    \includestandalone[keepaspectratio,scale=1.5]{figures/lock}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[t]{SPMM Design}
+  Component: \emph{Statistics}.
+  \begin{figure}
+    \centering
+    \includestandalone[keepaspectratio,scale=1.2]{figures/statistics}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[t]{SPMM Design}
+  Combining Components: \emph{Manager} and \emph{Component}.
+  \pause
+  \vspace*{0.5cm}
+  \begin{figure}
+    \centering
+    \includestandalone[keepaspectratio,scale=0.9]{figures/combining-components}
+  \end{figure}
 \end{frame}

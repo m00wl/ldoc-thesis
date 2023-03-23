@@ -1,0 +1,22 @@
+\documentclass[class=minimal,border=0pt]{standalone}
+
+\usepackage{fontspec}
+\usepackage{caption}
+\usepackage{tudscrfonts}
+\usepackage{tudscrcolor}
+\usepackage[simplified]{pgf-umlcd}
+
+%\renewcommand{\umltextcolor}{black}
+%\renewcommand{\umlfillcolor}{lightgray}
+\renewcommand{\umldrawcolor}{cdblue}
+
+\begin{document}
+
+\begin{tikzpicture}
+  \begin{interface}[]{Lock}{0,0}
+    \operation[0]{+ lock\_page(...)}
+    \operation[0]{+ unlock\_page(...)}
+  \end{interface}
+\end{tikzpicture}
+
+\end{document}
