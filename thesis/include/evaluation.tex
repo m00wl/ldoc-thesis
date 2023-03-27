@@ -10,7 +10,7 @@ Furthermore, I examine the security properties of the \ac{spmm} service.
 All measurements are performed on a Raspberry Pi 4 Model B with 4GiB of \acs{ram}, which is compatible with \ac{l4re}.
 The built \ac{l4re} images are flashed to a microSD card and booted using the U-Boot bootloader \cite{u-boot}.
 All benchmark experiments are run at the native clock speed of the Broadcom BCM2711 \acs{cpu}, which is set to 1.5GHz, and application threads are pinned to \acs{cpu} cores.
-Furthermore, the same \ac{cbps} implementation is used for all experiments.
+Furthermore, the same \ac{spmm} configuration is used for all experiments.
 In terms of component versions, the \texttt{Simple-*} implementation is used for each component, except for the allocator component, where the \texttt{Ds\-L4Re\-Allocator} ensures that the Raspberry Pi system actually benefits from potential memory savings.
 
 \subsection{Theoretical Limits}
@@ -22,7 +22,7 @@ After receiving a corresponding mapping, it modifies the page contents in this m
 It then sleeps and refrains from modifying the page contents any further, allowing the behaviour of the \ac{spmm} to be studied in a controlled, undisturbed environment.
 Two scenarios, the optimal and the suboptimal, are examined with varying memory sizes between 1MiB and 256MiB.
 In each experiment configuration, the time taken by the \ac{spmm} service to scan through a memory region of a given size is measured.
-Each data point is averaged over 10 measurements.
+Each data point is averaged over a series of 10 measurements.
 The overhead of timing was experimentally determined to be 3ms.
 The results are shown in figure \ref{fig:scan-speed}.
 
@@ -36,30 +36,31 @@ The results are shown in figure \ref{fig:scan-speed}.
 In the optimal case, the application software sets all memory pages to contain the same content.
 This results in an optimal merge ratio where a single physical page can be shared by all virtual pages in the memory region.
 As we can see from the figure, the scan speed decreases as the size of the registered memory region increases.
-For a memory size of 1MiB it scans at 50$\frac{MiB}{s}$ but slows down to as low as 2.97$\frac{MiB}{s}$ for regions of 256MiB.
+For a memory size of 1MiB it starts at 50$\frac{MiB}{s}$ but slows down to as low as 2.97$\frac{MiB}{s}$ for regions of 256MiB.
 
 In the suboptimal case, the application software uses the same memory setup, but additionally numbers the last byte(s) of each page in ascending order.
-This ensures that each page is different, and also maximises the effort needed to find out by bytewise comparisons.
+This ensures that each page is different, and also maximises the effort needed to find out by sequential bytewise comparisons.
 This results in a suboptimal merge ratio because no page can be merged.
 As we can see from the figure, the scan speed also decreases as the size of the memory region increases.
 It starts much lower at 12.01$\frac{MiB}{s}$ for 1MiB regions and slows down to 0.05$\frac{MiB}{s}$ for 256MiB regions.
 
 It can be seen that in both scenarios the scan speed is largely influenced by the underlying memory size and is not constant.
 In the interval examined, the scan speed in the optimal scenario is always higher than in the suboptimal scenario.
-This in in line with my expectations.
-On the other hand, the differences in scan speed between the two cases decreasing steadily with increasing memory size, which is contrary to my expectations.
+This is in line with my expectations.
+On the other hand, the differences in scan speed between the two cases is decreasing steadily with increasing memory size, which is contrary to my expectations.
 The implementation of the worker component has the biggest influence on the scan speed.
 The \texttt{Simple\-Worker} stores pages for which no merge partner could be found in an internal buffer.
 Subsequent pages are compared against already merged pages and all the pages in the buffer before being added to the end of the buffer.
-Therefore, one would expect the scan speeds in both scenarios to diverge and drift apart as memory sizes increase.
+Therefore, I would expect the scan speeds in both scenarios to diverge and drift apart as memory sizes increase.
+
 I make the following assumption.
 As the memory size and the number of pages to be processed increases, the overhead caused by internal data structures such as lists and trees becomes increasingly important.
-This could happen to the point where it accounts for the majority of the time spent during the scan operation.
+This could happen up to the point where it accounts for the majority of the time spent during the scan operation.
 The actual differences in memory comparison times are overshadowed by the management overhead and the scan speed succumbs to background noise.
 
-The measurements conducted in this experiment form the basis for reasoning about \ac{spmm} efficiency.
-They represent upper and lower bounds that limit the \ac{spmm} scan speed in other scenarios.
-The next section evaluates the efficiency of the \ac{spmm} service in more realistic application scenarios.
+The measurements conducted in this experiment form the basis for reasoning about the efficiency of this \ac{spmm} configuration.
+They represent upper and lower bounds that limit this configuration's scan speed in other scenarios.
+The next section evaluates the efficiency of the \ac{spmm} service configuration in more realistic application scenarios.
 
 \subsection{Case Study}
 \label{subsec:case-study}
@@ -67,23 +68,23 @@ The next section evaluates the efficiency of the \ac{spmm} service in more reali
 A popular use case is the application of \ac{cbps} functionality in virtualised environments.
 Due to the large number of near-identical virtual machine instances running on modern cloud servers, page deduplication techniques can yield high returns.
 This is underlined by the fact that, historically, \ac{cbps} implementations first appeared in hypervisor software \cite{vmware-tps-patent}.
-\Acp{vm} provide an ideal environment for evaluating the performance and scalability of a \ac{cbps} implementation, as they offer the benefits of both software and hardware isolation, and can be created in abundance.
-In addition, a \ac{vm} offers a high degree of flexibility in memory management.
+Moreover, \Acp{vm} provide an ideal environment for evaluating the performance and scalability of a \ac{cbps} implementation, as they offer the benefits of both software and hardware isolation, and can be created in abundance.
+In addition, they offer a high degree of flexibility in memory management.
 The virtualisation layer can control the allocation of physical memory, making it possible to experiment with different memory configurations and test the impact of various implementation strategies.
 
-In \ac{l4re}, there is \ac{uvmm} which allows guest \acp{os} to run on top of the microkernel-based framework.
+In \ac{l4re}, there is \ac{uvmm} which allows virtualised guest \acp{os} to run on top of the microkernel-based framework.
 As shown in chapter \ref{chap:design}, \ac{uvmm} can be adapted to support page deduplication for \acp{vm}.
 Internally, \ac{uvmm} uses a dataspace to represent the main memory of a \ac{vm}.
-By allocating this so-called "\acs{ram} dataspace" from the \ac{spmm} service instead of the standard environment, individual \acp{vm} can be subscribed to \ac{spmm} operation.
+By allocating this so-called \emph{\acs{ram} dataspace} from the \ac{spmm} service instead of the standard environment, individual \acp{vm} can be subscribed to \ac{spmm} operation.
 
-For the remaining number of experiments, the following benchmark \ac{vm} is used.
-It is configured to have 1 \ac{cpu} core and 1 GiB of \ac{ram}.
+For the remaining number of experiments, I create and use a \emph{benchmark VM}.
+It is configured to have 1 \ac{cpu} core and 1GiB of \ac{ram}.
 It also runs an unmodified Linux 5.16.1 kernel.
 The \ac{vm} only has access to main memory, so the \ac{uvmm} prepares the \ac{ram} dataspace to include everything the \ac{vm} needs.
-The final unmodified memory footprint of the benchmark \ac{vm} amounts to 1 GiB.
-This includes the Linux kernel image (\textasciitilde{}33 MiB), a device tree blob (\textasciitilde{}2 KiB) and a ramdisk with a root filesystem (\textasciitilde{}256 MiB).
+The final unmodified memory footprint of the benchmark \ac{vm} amounts to 1GiB.
+This includes the Linux kernel image (\textasciitilde{}33MiB), a device tree blob (\textasciitilde{}2KiB) and a ramdisk with a root filesystem (\textasciitilde{}256MiB).
 This root filesystem features the typical UNIX \ac{fhs} and is populated by a \texttt{busybox} v1.36.0.git multi-call binary.
-It also contains a compression benchmark that is used in later experiments.
+It also contains a compression benchmark that is used in a later experiment.
 The rest of the memory is initially zeroed out.
 
 \subsubsection*{Experiment 1}
@@ -91,9 +92,10 @@ The rest of the memory is initially zeroed out.
 
 The first experiment performs a static analysis of the memory footprint of the benchmark \ac{vm}.
 Even before the \ac{vm} is started, there are memory savings achievable, because the \ac{vm} can be condensed by means of page deduplication.
-This potential stems from pre-existing memory redundancy in the \ac{vm} image, e.g. induced by all the unused initial zero pages.
+This potential stems from pre-existing memory redundancy in the \ac{vm} image.
 The initial 262144 unshared memory pages can be reduced to a total of 61513 unshared and 328 shared pages.
 This is a saving of 200303 memory pages and corresponds to a relative memory saving of approximately 76\%.
+
 Figure \ref{fig:page-distribution-vm} shows the page distribution over time when the \ac{spmm} service is applied to the benchmark \ac{vm} image.
 Since sharing is very effective, the small proportion of 328 shared pages is not rendered visible in the diagram.
 The graph can be divided into two parts.
@@ -109,6 +111,14 @@ This can be compared to the optimal case from section \ref{subsec:theoretical-li
 In the end, however, \ac{spmm} encounters the large amount of heterogeneous page content of the root filesystem.
 This is much closer to the suboptimal case from section \ref{subsec:theoretical-limits}, and slows down \ac{spmm} scan speed accordingly.
 
+A noteable finding of this experiment are the different patterns of redundant memory that appear in the \ac{vm} image.
+Trivially, a singular zero page can be shared by all the unused zero pages that make up roughly two thirds of the static \ac{vm} image.
+To further reveal other sharing opportunities, I use the L4 Kernel Debugger \texttt{jdb} to inspect the internal memory of a running \ac{spmm} instance after 1241492 ms (\textasciitilde{}21 minutes).
+Next to the trivial zero pages, \ac{spmm} also shares pages completely filled with data constants (e.g. \texttt{0xCC}) or instructions (e.g. \texttt{NOP} sleds).
+These might stem from padding or memory poisoning attempts in the Linux kernel.
+There are also other pages with cryptic content whose origin I cannot determine.
+This fact suggests that a closer examination of the content and the origin of pages as well as the classification of shared pages might lead to a better understanding of the sharing potential in these \acp{vm}.
+
 \begin{figure}
   \centering
   \includestandalone[]{figures/page-distribution-vm}
@@ -123,9 +133,9 @@ This is much closer to the suboptimal case from section \ref{subsec:theoretical-
   \label{fig:boot-time-vm}
 \end{figure}
 
-Unfortunately, there is a cost to statically increasing memory density in the system and reaping the resulting memory savings.
+Unfortunately, \emph{there is no such thing as a free lunch}, and statically increasing memory density in the system comes at a cost.
 This fact is illustrated in figure \ref{fig:boot-time-vm}.
-It shows the \ac{vm} boot time for increasing merge density of the underlying image.
+It shows the \ac{vm} boot time for an increasing merge density of the underlying image.
 Starting from an unmodified image, where no page mappings have been altered, the \ac{vm} takes 8150ms (=8.15 seconds) to boot.
 Fully merged images, on the other hand, induce a boot time of 564883ms (\textasciitilde{}9 minutes) while keeping memory saving always above 512MiB and 50\%.
 This puts the advantages of the \ac{spmm} service (memory savings) in relation to the disadvantages (increased boot time) for this particular application scenario.
@@ -154,23 +164,30 @@ Apart from the  data structure overhead, the overhead of virtual memory operatio
 \label{subsubsec:ex2}
 
 The next experiment conducts a dynamic performance analysis in parallel with the regular \ac{vm} execution.
-The \emph{turbobench} compression benchmark \cite{turbobench}, which was included in the root filesystem, is chosen as an exemplary workload.
+The \emph{turbobench} compression benchmark \cite{turbobench}, which was included in the root filesystem, is chosen as an exemplary workload for the \ac{vm}.
 It is a versatile, single-core, 100\% in-memory compression benchmark that combines more than 70 compressors such as \texttt{lz4}, \texttt{zstd}, \texttt{bzip2}, etc., in one executable.
 Version \texttt{release-2020-02} of turbobench is used.
 The benchmark data is provided by the \emph{Silesia} compression corpus \cite{silesia-corpus}, which provides a cross-section of typical data types in modern application workloads, such as large text files, source code and binary files, and various forms of image and matrix data.
 The data files range in size from 6MiB to 51MiB, with a total size of 211MiB.
 The experimental setup consists of booting the benchmark \ac{vm} and simultaneously starting the \ac{spmm} service.
-After boot, the \ac{vm} sleeps until the underlying \ac{vm} image is fully condensed by the \ac{spmm}.
-Then, the \ac{vm} executes the FAST compressor group setting of turbobench on all corpus files, while the \ac{spmm} service runs in the background.
+After boot, the \ac{vm} sleeps until the underlying \ac{vm} image is completely scanned once.
+Then, the \ac{vm} executes the FAST compressor group setting of turbobench on all corpus files, while the \ac{spmm} service continues to run in the background.
 During runtime, the \ac{spmm} and turbobench statistics are monitored.
 The resulting page distribution over time can be seen in figure \ref{fig:page-distribution-turbobench-silesia}.
-The graph can be divided into three parts.
+The diagram can be divided into three parts.
 
 \begin{figure}
   \centering
   \includestandalone[]{figures/page-distribution-turbobench-silesia}
-  \caption{Page Distribution over Time for the Example Workload}
+  \caption{Page Distribution over Time in L4Re+uvmm with SPMM enabled}
   \label{fig:page-distribution-turbobench-silesia}
+%\end{figure}
+  % make sure that figures are arranged one below the other
+%\begin{figure}
+  \centering
+  \includestandalone[]{figures/page-distribution-ksm-turbobench-silesia}
+  \caption{Page Distribution over Time in Linux+KVM with KSM enabled}
+  \label{fig:page-distribution-ksm-turbobench-silesia}
 %\end{figure}
   % make sure that figures are arranged one below the other
 %\begin{figure}
@@ -180,37 +197,65 @@ The graph can be divided into three parts.
   \label{fig:runtime-turbobench-silesia}
 \end{figure}
 
-In the pre-benchmark section, before turbobench is run, the \ac{spmm} works it's way through the \ac{vm} memory almost undisturbed.
+In the pre-benchmark section, before turbobench is run, the \ac{spmm} works its way through the \ac{vm} memory almost undisturbed.
 The number of unshared pages decreases monotonically, but the total number of pages saved is less than in the static case (see figure \ref{fig:page-distribution-vm}) because the \ac{vm} is running this time.
-This process takes 1857223ms (\textasciitilde{}31 minutes) and results in 15920 unshared, 53732 shared and 192492 saved pages, which corresponds to an approximate memory saving of 73\%.
+This process takes 1837283ms (\textasciitilde{}30 minutes) and results in 15916 unshared, 53732 shared and 192496 saved pages, which corresponds to an approximate memory saving of 73\%.
 
 After this time, the \ac{vm} wakes up and starts executing the compression benchmark.
 During this benchmark section, a flood of page unmerge operations emerges.
 While the number of shared pages remains constant, the number of unshared pages increases monotonically in a staircase-shaped fashion.
-This section lasts until 9185733ms (\textasciitilde{}2 hours 33 minutes) and results in 111437 unshared, 53470 shared and 97237 unshared pages, which corresponds to an approximate memory saving of 37\%.
+This section lasts until 9021228ms (\textasciitilde{}2 hours 30 minutes) and results in 111437 unshared, 53470 shared and 97237 unshared pages, which corresponds to an approximate memory saving of 37\%.
 
 In the post-benchmark section, the \ac{vm} returns to idle and the \ac{spmm} "cleans up" by merging the \ac{vm} image back together as far as possible.
-The saturation point is reached after 11593500ms (\textasciitilde{}3 hours 13 minutes), where the image consists of 67602 unshared, 66110 shared and 128432 saved pages, which corresponds to an approximate memory saving of 49\%.
+The saturation point is reached after 11199685ms (\textasciitilde{}3 hours 6 minutes), where the image consists of 67602 unshared, 66110 shared and 128432 saved pages, which corresponds to an approximate memory saving of 49\%.
 Since some previously unused memory pages now contain remains of the compression benchmark, the overall memory saving is less than before the benchmark.
 
-A noteable finding is the interesting behaviour of the page distribution during the benchmark section.
+A noteable finding of this experiment is the interesting behaviour of the page distribution during the benchmark section.
 The plateaus stem from the fact that turbobench allocates writable memory for each run.
 As soon as enough memory pages have been reclaimed to fulfil this allocation, turbobench can start the computationally intensive processing of a benchmark file and the allocation pressure disappears, leaving the page distribution almost constant.
 
 Another noteable finding is the impact of the \ac{spmm} service on the overall benchmark runtime.
-With \ac{spmm} enabled, turbobench takes 7123s (\textasciitilde{}1 hour 58 minutes) to process all benchmark files.
-Compared to a native execution time of 2250s (\textasciitilde{}37 minutes 30 seconds), the \ac{spmm} service causes an overhead of 316.57\%.
+With \ac{spmm} enabled, turbobench takes 7069s (\textasciitilde{}1 hour 57 minutes) to process all benchmark files.
+Compared to a native execution time of 2250s (\textasciitilde{}37 minutes 30 seconds), the \ac{spmm} service causes an overhead of 314.17\%.
 However, a large portion of the total runtime is spent waiting for the \ac{spmm} service to unmerge and map back the required memory pages.
 This wait time is dependent on the allocation size, but also decreases as the benchmark runs longer because it is heavily influenced by the occurrence of page thrashing.
 In particular, at the beginning of the benchmark, when there is only a small amount of unshared pages left, \ac{spmm} iterates over the same pages more often, which favours the occurrence of page thrashing.
 Consequently, page trashing occurs less often as more memory pages are unmerged by the benchmark.
+
 This leads to an interesting behaviour.
 The processing time of a benchmark data file is not uniform and depends on the position of that file in the sequence of all files that are being processed.
 I attempt to remove the effects of page thrashing from the execution time by processing each of the 12 benchmark data files at each of the 12 positions and then averaging the execution times per file.
 The adjusted, position-independent execution times of each file in the Silesia corpus are depicted in figure \ref{fig:runtime-turbobench-silesia}.
 It can be seen that the overhead is still different for each file and ranges between 16-85\%.
-On average, regardless of file size and processing order, the processing of a benchmark data file has an overhead of 57.38\%.
-Different implementations of the worker component with better thrashing prevention may be able to reduce this overhead even further.
+I attribute the remaining differences in overhead to the varying sizes of the benchmark files and their non-uniform memory needs when being processed.
+On average, regardless of execution order, the processing of a benchmark data file has an overhead of 57.38\%.
+A different implementation of the worker component may be able to mitigate the observed variance in overhead entirely.
+For example, this can be achieved by better thrashing prevention or heuristics about page content stability.
+
+\subsubsection*{Experiment 2: Comparing results}
+\label{subsubsec:ex2-linux}
+
+For a better inituition about these results, I conduct experiment 2 also in a Linux-based \ac{os}.
+After flashing Raspberry Pi OS to the Pi, I recompile the default shipped Linux 6.1.20 kernel to include the missing \ac{kvm} and \ac{ksm} features and install it on the Pi as well.
+In an attempt to replicate the benchmark \ac{vm} as closely as possible, I reuse the exact same machine properties, kernel image and ramdisk as in \ac{l4re} and run a qemu \ac{vm} with \ac{kvm} hardware acceleration.
+In addition, I configure \ac{ksm} identically to the \ac{spmm} configuration from before, matching configuration parameters wherever possible.
+At runtime, \ac{ksm} statistics from \texttt{/sys/kernel/mm/ksm/} are monitored.
+Figure \ref{fig:page-distribution-ksm-turbobench-silesia} shows the resulting page distribution over time.
+Again, the diagram has 3 prominet sections.
+
+In the pre-benchmark section, the first scan of the \ac{vm} image takes 115 seconds.
+It results in 72126 unshared, 53560 shared and 136458 saved pages, which corresponds to a memory saving of about 52\%.
+Afterwards turbobench starts processing the Silesia files, which takes 1753 seconds (\textasciitilde{}29 minutes).
+Compared to a native execution time of 1622 seconds (\textasciitilde{}27 minutes), the \ac{ksm} activity causes an overhead of about 8.07\%.
+In this section, the number of shared pages remains almost constant, while the number of unshared pages fluctuates with each memory allocation, just as in \ac{l4re}.
+The benchmark section ends after 1868 seconds (\textasciitilde{}31 minutes) and results in 50750 unshared, 85001 shared and 126393 saved pages, which corresponds to a memory saving of approximately 48\%.
+At the end, the \ac{vm} goes back to idle and page sharing immediately stagnates at around 48\% memory saving.
+
+When comparing the page distribution of \ac{ksm} with that of \ac{spmm}, two points stand out.
+First, although \ac{ksm} is faster and causes significantly less overhead on the benchmark (8.07\% vs. 57.38\%), both \ac{ksm} and \ac{spmm} end up with similar merge ratios and a post-benchmark memory saving of 48-49\%.
+This suggests that the underlying logic of the \ac{spmm} is as correct as that of \ac{ksm}, but the performance of the \ac{spmm} can be improved.
+Furthermore, \ac{ksm} merges much less aggressively in the initial scan during the pre-benchmark section (52\% vs. 73\% pre-benchmark memory saving).
+The fact that \ac{ksm} does not seem to blindly take every sharing opportunity may further mitigate the effects of page thrashing, and can also be considered an interesting point of investigation for future \ac{spmm} implementations.
 
 This concludes the evaluation of this \ac{spmm} configuration.
 In the next section, I add some remarks about the security of the \ac{spmm} service in general.
@@ -244,4 +289,4 @@ However, the fact that \ac{spmm} encapsulates all its functionality in separate 
 Finally, in its current form, \ac{spmm} does not implement any protection against time side-channels or other attacks.
 On the contrary, a noticeable difference in page fault latency between merged and unmerged pages of a \ac{vm} has been experimentally demonstrated in section \ref{sec:performance-evaluation}.
 However, by splitting the \ac{spmm} design into individual components, preventative functionality can be added retrospectively without fundamental changes to the core API.
-In addition to that, multiple instances of the \ac{spmm} service can be executed in parallel on a per-user basis, further restricting the influence of induced side-channels.
+In addition to that, the influence of induced side-channels can be furhter mitigated through deployment and runtime options, e.g. by runnning multiple instances of the \ac{spmm} service in parallel on a per-user basis.

@@ -4,7 +4,7 @@ Die Anwendung von Techniken zur Seitendeduplikation ist eine gängige Methode, u
 Aus diesem Grund sind heute Implementierungen für das inhaltsbasierte Teilen von Speicherseiten in einer Vielzahl von Betriebssystemen und Hypervisoren verfügbar.
 
 Diese Arbeit erforscht die Konzepte der Speicherseitendeduplikation und stellt \acs{spmm} vor, einen neuen Ansatz für das inhaltsbasierte Teilen von Speicherseiten.
-Ich zeige, dass ein durchdachtes Softwaredesign und auswechselbare Komponenten die Erstellung eines flexiblen und betriebssystemunabhängigen Frameworks ermöglichen, welches beliebige Deduplikationsstrategien und die Anpassung an eine Vielzahl von Anwendungsszenarien erlaubt.
+Ich zeige, dass ein spezielles Softwaredesign und auswechselbare Komponenten die Erstellung eines flexiblen und betriebssystemunabhängigen Frameworks ermöglichen, welches beliebige Deduplikationsstrategien und die Anpassung an eine Vielzahl von Anwendungsszenarien erlaubt.
 Darüber hinaus schließt diese Arbeit eine Lücke in der Landschaft der öffentlich verfügbaren Speicherseitendeduplikationsimplementierungen, indem sie die erste Implementierung in einem Mikrokernel-basierten System bereitstellt.
 Die Referenzimplementierung im \acs{l4re} Betriebssystemframework erreicht Scangeschwindigkeiten von bis zu 50$\frac{MiB}{s}$.
 Für eine beispielhafte Kompressionsarbeitslast in einer virtualisierten Umgebung zeige ich, dass \acs{spmm} in \acs{l4re} eine konstante Speichereinsparung von mindestens 37\% erreicht, während ein durchschnittlicher Overhead von nur 57,38\% entsteht.
