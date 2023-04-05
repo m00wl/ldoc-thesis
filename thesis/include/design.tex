@@ -124,7 +124,7 @@ More sophisticated evaluation parameters might be derived from these basic varia
   \label{tab:statistics-counters}
 \end{table}
 
-\subsection*{}
+\paragraph{}
 
 Taken together, these six components make up for all the required functionality of the \ac{spmm}. 
 For each component, the high-level functionality has been defined, but the concrete execution behaviour is highly dependent on the nature of the underlying algorithm or implementation strategy.
@@ -150,9 +150,9 @@ The balance between these two control flows can be fine-tuned using component sp
 The described approach raises the question of how components can interact with each other.
 The mediator design pattern is used to make room for flexible component arrangements and fine-grained control over component interaction.
 By doing so, two additional components classes are introduced.
-The component class acts as a an enclosing parent class.
+The \emph{Component} class acts as a an enclosing parent class.
 Every other component from section \ref{sec:components} inherits from this base class.
-The manager component then acts as an intermediary, being the first entry point for any invocation of a component function.
+The \emph{Manager} component then acts as an intermediary, being the first entry point for any invocation of a component function.
 Different implementations of this manager can depict arbitrary relations and interactions between at least one or more instances of each component.
 For this reason, managers must implement an entry point for \emph{every} function of \emph{every} component that they manage.
 Figure \ref{fig:umlcd} illustrates the total set of components, their functions, and their overall relationship in the form of an UML class diagram.

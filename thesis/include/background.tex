@@ -12,7 +12,7 @@ In addition to that, it explains how \ac{cbps} works in principle and how it bui
 \section{Memory Hierarchy}
 \label{sec:memory-hierarchy}
 
-The predominant memory architecture found in many computer systems today is a hierarchy of different memory types with varying access time, storage capacites and costs.
+The predominant memory architecture found in many computer systems today is a hierarchy of different memory types with varying access times, storage capacites and costs.
 This collection of diverse memory classes is required in order to meet the storage needs and performance demands of modern applications and usage scenarios.
 Table \ref{tab:memory-hierarchy} gives an overview over components that make up this hierarchy, as well as their capacity and the time it takes the \ac{cpu} to access them.
 It can be seen that access time and capacity are increasing further down the hierarchy.
@@ -81,7 +81,7 @@ As described in technical literature \cite{mos2009}, the process of memory pagin
 This relocation of memory pages, also called swapping, ensures that the most frequently used pages are kept in main memory for improved performance, while less frequently used pages are evacuated in order to free up physical memory.
 Using both techniques in conjunction allows applications and services to have a large nearly infinite virtual memory space, while the physical memory is used to cache the most frequently used parts of their address spaces.
 The common practice of allocating more memory to processes than is physically available in the system, therefore relying on memory paging for the system to serve the memory allocations of every process, is called overcommitment.
-Page thrashing can occur when virtual memory resources are overcommitted, leading to a constant loop of page fault handling as memory pages are continuously swapped in and out or mapped back and forth.
+\emph{Page thrashing} can occur when virtual memory resources are overcommitted, leading to a constant loop of page fault handling as memory pages are continuously swapped in and out or mapped back and forth.
 This shows, that the memory hierarchy, virtual memory and memory paging are closely related concepts in modern computers that work hand in hand.
 
 In modern \acp{os}, the virtual memory subsystem is implemented using a combination of hardware and software \cite{mos2009}.
